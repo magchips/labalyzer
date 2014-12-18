@@ -1,16 +1,16 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: tab; tab-width: 2 -*-
 ### BEGIN LICENSE
 # Copyright (C) 2010 <Atreju Tauschinsky> <Atreju.Tauschinsky@gmx.de>
-# This program is free software: you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License version 3, as published 
+# This program is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License version 3, as published
 # by the Free Software Foundation.
-# 
-# This program is distributed in the hope that it will be useful, but 
-# WITHOUT ANY WARRANTY; without even the implied warranties of 
-# MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR 
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranties of
+# MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR
 # PURPOSE.  See the GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License along 
+#
+# You should have received a copy of the GNU General Public License along
 # with this program.  If not, see <http://www.gnu.org/licenses/>.
 ### END LICENSE
 
@@ -28,8 +28,7 @@ import os, pickle
 import logging
 logger = logging.getLogger('labalyzer')
 
-SETTINGS_VERSION = 0.3
-
+SETTINGS_VERSION = 1.2
 class AnalogChannelDescriptor:
 	'''describes analog channels'''
 	def __init__(self, boardNumber, channelNumber, minvalue=-10, maxvalue=10, scalefactor=1):
@@ -96,7 +95,7 @@ class LabalyzerSettings(dict):
 			if not os.path.exists(self.configPath):
 				os.makedirs(self.configPath)
 			
-		versionPath = os.path.join(self.configPath, 'version') 
+		versionPath = os.path.join(self.configPath, 'version')
 		if os.path.exists(versionPath):
 			with open(versionPath, 'rb') as f:
 				self.version = pickle.load(f)
@@ -148,17 +147,68 @@ class LabalyzerSettings(dict):
 		self['DigitalChannels']['MOT Shutter'] = DigitalChannelDescriptor(0, 2, 'open', 'shut')
 		self['DigitalChannels']['Probe  shutter'] = DigitalChannelDescriptor(0, 3, 'open', 'shut')
 		self['DigitalChannels']['Repump Shutter'] = DigitalChannelDescriptor(0, 4, 'open', 'shut')
-		self['DigitalChannels']['None'] = DigitalChannelDescriptor(0, 5, 'open', 'shut')
+		self['DigitalChannels']['Trigger RedBlue'] = DigitalChannelDescriptor(0, 5, 'high', 'low')
 		self['DigitalChannels']['Rb dispenser'] = DigitalChannelDescriptor(0, 6, 'on', 'off')
 		self['DigitalChannels']['FET switches'] = DigitalChannelDescriptor(0, 7, 'on', 'off')
-		self['DigitalChannels']['rf sweep'] = DigitalChannelDescriptor(0, 8, 'on', 'off')
+		self['DigitalChannels']['Raman Trigger'] = DigitalChannelDescriptor(0, 8, 'high', 'low')
 		self['DigitalChannels']['RF switch'] = DigitalChannelDescriptor(0, 9, 'output2', 'output1')
-		self['DigitalChannels']['MW switch'] = DigitalChannelDescriptor(0, 10, 'on', 'off')
+		self['DigitalChannels']['MOS-FET/Relais'] = DigitalChannelDescriptor(0, 10, 'on', 'off')
 		self['DigitalChannels']['Probe AOM Switch'] = DigitalChannelDescriptor(0, 11, 'on', 'off')
-		self['DigitalChannels']['UZ FET switch'] = DigitalChannelDescriptor(0, 12, 'on', 'off')
-		self['DigitalChannels']['EIT Shutter'] = DigitalChannelDescriptor(0, 13, 'high', 'low')
+		self['DigitalChannels']['Red Shutter'] = DigitalChannelDescriptor(0, 12, 'open', 'shut')
+		self['DigitalChannels']['Blue Shutter'] = DigitalChannelDescriptor(0, 13, 'open', 'shut')
 		self['DigitalChannels']['Cam shutter'] = DigitalChannelDescriptor(0, 14, 'open', 'shut')
 		self['DigitalChannels']['AnalogTrigger'] = DigitalChannelDescriptor(0, 15)
+
+		self['DigitalChannels']['1, 0'] = DigitalChannelDescriptor(1, 0, 'high', 'low')
+		self['DigitalChannels']['1, 1'] = DigitalChannelDescriptor(1, 1, 'open', 'shut')
+		self['DigitalChannels']['1, 2'] = DigitalChannelDescriptor(1, 2, 'open', 'shut')
+		self['DigitalChannels']['1, 3'] = DigitalChannelDescriptor(1, 3, 'open', 'shut')
+		self['DigitalChannels']['1, 4'] = DigitalChannelDescriptor(1, 4, 'open', 'shut')
+		self['DigitalChannels']['1, 5'] = DigitalChannelDescriptor(1, 5, 'high', 'low')
+		self['DigitalChannels']['1, 6'] = DigitalChannelDescriptor(1, 6, 'on', 'off')
+		self['DigitalChannels']['1, 7'] = DigitalChannelDescriptor(1, 7, 'on', 'off')
+		self['DigitalChannels']['1, 8'] = DigitalChannelDescriptor(1, 8, 'high', 'low')
+		self['DigitalChannels']['1, 9'] = DigitalChannelDescriptor(1, 9, 'output1', 'output2')
+		self['DigitalChannels']['1, 10'] = DigitalChannelDescriptor(1, 10, 'on', 'off')
+		self['DigitalChannels']['1, 11'] = DigitalChannelDescriptor(1, 11, 'on', 'off')
+		self['DigitalChannels']['1, 12'] = DigitalChannelDescriptor(1, 12, 'open', 'shut')
+		self['DigitalChannels']['1, 13'] = DigitalChannelDescriptor(1, 13, 'open', 'shut')
+		self['DigitalChannels']['1, 14'] = DigitalChannelDescriptor(1, 14, 'open', 'shut')
+		self['DigitalChannels']['1, 15'] = DigitalChannelDescriptor(1, 15)
+
+		self['DigitalChannels']['Red AOM'] = DigitalChannelDescriptor(2, 0, 'open', 'shut')
+		self['DigitalChannels']['Blue EOM'] = DigitalChannelDescriptor(2, 1, 'open', 'shut')
+		self['DigitalChannels']['Raman AOM'] = DigitalChannelDescriptor(2, 2, 'open', 'shut')
+		self['DigitalChannels']['2, 3'] = DigitalChannelDescriptor(2, 3, 'open', 'shut')
+		self['DigitalChannels']['2, 4'] = DigitalChannelDescriptor(2, 4, 'open', 'shut')
+		self['DigitalChannels']['2, 5'] = DigitalChannelDescriptor(2, 5, 'high', 'low')
+		self['DigitalChannels']['2, 6'] = DigitalChannelDescriptor(2, 6, 'on', 'off')
+		self['DigitalChannels']['2, 7'] = DigitalChannelDescriptor(2, 7, 'on', 'off')
+		self['DigitalChannels']['2, 8'] = DigitalChannelDescriptor(2, 8, 'high', 'low')
+		self['DigitalChannels']['2, 9'] = DigitalChannelDescriptor(2, 9, 'output1', 'output2')
+		self['DigitalChannels']['2, 10'] = DigitalChannelDescriptor(2, 10, 'on', 'off')
+		self['DigitalChannels']['2, 11'] = DigitalChannelDescriptor(2, 11, 'on', 'off')
+		self['DigitalChannels']['2, 12'] = DigitalChannelDescriptor(2, 12, 'open', 'shut')
+		self['DigitalChannels']['2, 13'] = DigitalChannelDescriptor(2, 13, 'open', 'shut')
+		self['DigitalChannels']['2, 14'] = DigitalChannelDescriptor(2, 14, 'open', 'shut')
+		self['DigitalChannels']['2, 15'] = DigitalChannelDescriptor(2, 15)
+
+		self['DigitalChannels']['3, 0'] = DigitalChannelDescriptor(3, 0, 'high', 'low')
+		self['DigitalChannels']['3, 1'] = DigitalChannelDescriptor(3, 1, 'open', 'shut')
+		self['DigitalChannels']['3, 2'] = DigitalChannelDescriptor(3, 2, 'open', 'shut')
+		self['DigitalChannels']['3, 3'] = DigitalChannelDescriptor(3, 3, 'open', 'shut')
+		self['DigitalChannels']['3, 4'] = DigitalChannelDescriptor(3, 4, 'open', 'shut')
+		self['DigitalChannels']['3, 5'] = DigitalChannelDescriptor(3, 5, 'high', 'low')
+		self['DigitalChannels']['3, 6'] = DigitalChannelDescriptor(3, 6, 'on', 'off')
+		self['DigitalChannels']['3, 7'] = DigitalChannelDescriptor(3, 7, 'on', 'off')
+		self['DigitalChannels']['3, 8'] = DigitalChannelDescriptor(3, 8, 'high', 'low')
+		self['DigitalChannels']['3, 9'] = DigitalChannelDescriptor(3, 9, 'output1', 'output2')
+		self['DigitalChannels']['3, 10'] = DigitalChannelDescriptor(3, 10, 'on', 'off')
+		self['DigitalChannels']['3, 11'] = DigitalChannelDescriptor(3, 11, 'on', 'off')
+		self['DigitalChannels']['3, 12'] = DigitalChannelDescriptor(3, 12, 'open', 'shut')
+		self['DigitalChannels']['3, 13'] = DigitalChannelDescriptor(3, 13, 'open', 'shut')
+		self['DigitalChannels']['3, 14'] = DigitalChannelDescriptor(3, 14, 'open', 'shut')
+		self['DigitalChannels']['3, 15'] = DigitalChannelDescriptor(3, 15)
 
 		self['rampFunctions'] = dict()
 		self['rampFunctions']['ramp'] = RampFunctionDescriptor("int(ramptime*settings['SamplesPerMillisecond']/1000)", '[int(abs_time + t_step*x) for x in xrange(0, samples+1)]', '[last_values[device] - v_step*x for x in xrange(0, samples+1)]')
@@ -187,7 +237,7 @@ class LabalyzerSettings(dict):
 		self['main.showDataLog'] = True
 		self['main.runFit'] = False
 		self['main.fitMethod'] = FIT_MOMS2D
-		self['main.saveAll'] = False 
+		self['main.saveAll'] = False
 		
 		# for andor
 		self['andor.temp'] = -60
@@ -207,7 +257,7 @@ class LabalyzerSettings(dict):
 
 	def saveSettings(self):
 		'''save settings to file'''
-		versionPath = os.path.join(self.configPath, 'version') 
+		versionPath = os.path.join(self.configPath, 'version')
 		settingsPath = os.path.join(self.configPath, 'settings')
 		with open(versionPath, 'wb') as f:
 			pickle.dump(self.version, f)

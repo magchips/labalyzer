@@ -7,6 +7,41 @@
   <object class="GtkAction" id="action2">
     <property name="stock_id">gtk-save-as</property>
   </object>
+  <object class="GtkAdjustment" id="adjAgilent2PulseLength">
+    <property name="upper">10000000000000000</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjAgilentAmp">
+    <property name="lower">0.01</property>
+    <property name="upper">10</property>
+    <property name="value">1</property>
+    <property name="step_increment">0.10000000000000001</property>
+    <property name="page_increment">0.10000000000000001</property>
+  </object>
+  <object class="GtkAdjustment" id="adjAgilentAmp2">
+    <property name="lower">0.01</property>
+    <property name="upper">10</property>
+    <property name="step_increment">0.10000000000000001</property>
+    <property name="page_increment">0.10000000000000001</property>
+  </object>
+  <object class="GtkAdjustment" id="adjAgilentFrequency">
+    <property name="upper">80000000</property>
+    <property name="value">1000000</property>
+    <property name="step_increment">1000</property>
+    <property name="page_increment">10000</property>
+  </object>
+  <object class="GtkAdjustment" id="adjAgilentFrequency2">
+    <property name="upper">80000000</property>
+    <property name="value">1000000</property>
+    <property name="step_increment">1000</property>
+    <property name="page_increment">10000</property>
+  </object>
+  <object class="GtkAdjustment" id="adjAgilentPulseLength">
+    <property name="upper">99999999999999</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkAdjustment" id="adjDDSFrequencyDirect">
     <property name="upper">50000</property>
     <property name="step_increment">1</property>
@@ -25,6 +60,32 @@
   </object>
   <object class="GtkAdjustment" id="adjNoDummies">
     <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjSRSABPulseLength">
+    <property name="upper">9999999999999</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjSRSCDPulseLength">
+    <property name="upper">999999999999999</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjSRSDOffset">
+    <property name="upper">999999999999</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjSRSPulseLength">
+    <property name="upper">999999999999999</property>
+    <property name="step_increment">1000</property>
+    <property name="page_increment">10000</property>
+  </object>
+  <object class="GtkAdjustment" id="adjSRSRelativeDelay">
+    <property name="lower">-99999999999999</property>
+    <property name="upper">9999999999999</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
@@ -61,6 +122,7 @@
               <object class="GtkMenuItem" id="menuitem1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="use_action_appearance">False</property>
                 <child type="submenu">
                   <object class="GtkMenu" id="menu1">
                     <property name="visible">True</property>
@@ -70,6 +132,7 @@
                         <property name="label">gtk-new</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="n" signal="activate" modifiers="GDK_CONTROL_MASK"/>
@@ -80,6 +143,7 @@
                         <property name="label">gtk-open</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="o" signal="activate" modifiers="GDK_CONTROL_MASK"/>
@@ -90,6 +154,7 @@
                         <property name="label">gtk-save</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="s" signal="activate" modifiers="GDK_CONTROL_MASK"/>
@@ -100,6 +165,7 @@
                         <property name="label">gtk-save-as</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="s" signal="activate" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK"/>
@@ -116,6 +182,7 @@
                         <property name="label">gtk-quit</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="q" signal="activate" modifiers="GDK_CONTROL_MASK"/>
@@ -129,6 +196,7 @@
               <object class="GtkMenuItem" id="menuitem2">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="use_action_appearance">False</property>
                 <child type="submenu">
                   <object class="GtkMenu" id="menu2">
                     <property name="visible">True</property>
@@ -138,6 +206,7 @@
                         <property name="label">gtk-cut</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="x" signal="activate" modifiers="GDK_CONTROL_MASK"/>
@@ -148,6 +217,7 @@
                         <property name="label">gtk-copy</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="c" signal="activate" modifiers="GDK_CONTROL_MASK"/>
@@ -158,6 +228,7 @@
                         <property name="label">gtk-paste</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="v" signal="activate" modifiers="GDK_CONTROL_MASK"/>
@@ -168,6 +239,7 @@
                         <property name="label">gtk-delete</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="Delete" signal="activate"/>
@@ -184,6 +256,7 @@
                         <property name="label">gtk-preferences</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
@@ -196,12 +269,14 @@
               <object class="GtkMenuItem" id="menuitem3">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="use_action_appearance">False</property>
               </object>
             </child>
             <child>
               <object class="GtkMenuItem" id="menuitem4">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="use_action_appearance">False</property>
                 <child type="submenu">
                   <object class="GtkMenu" id="helpMenu">
                     <property name="visible">True</property>
@@ -211,6 +286,7 @@
                         <property name="label">gtk-about</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
@@ -462,6 +538,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
+                                    <property name="use_action_appearance">False</property>
                                     <signal name="clicked" handler="on_btnReFit" swapped="no"/>
                                   </object>
                                   <packing>
@@ -476,6 +553,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
+                                    <property name="use_action_appearance">False</property>
                                     <signal name="clicked" handler="on_btnSaveCurrentImage_clicked" swapped="no"/>
                                   </object>
                                   <packing>
@@ -512,6 +590,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="draw_indicator">True</property>
                               </object>
                               <packing>
@@ -526,6 +605,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                               </object>
@@ -542,6 +622,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="draw_indicator">True</property>
                               </object>
                               <packing>
@@ -557,6 +638,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="draw_indicator">True</property>
                               </object>
                               <packing>
@@ -625,6 +707,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_chkShowDataLog_toggled" swapped="no"/>
@@ -641,6 +724,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="draw_indicator">True</property>
                               </object>
                               <packing>
@@ -659,6 +743,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
+                                    <property name="use_action_appearance">False</property>
                                     <property name="draw_indicator">True</property>
                                   </object>
                                   <packing>
@@ -673,6 +758,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
+                                    <property name="use_action_appearance">False</property>
                                     <property name="draw_indicator">True</property>
                                   </object>
                                   <packing>
@@ -687,6 +773,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
+                                    <property name="use_action_appearance">False</property>
                                     <property name="draw_indicator">True</property>
                                   </object>
                                   <packing>
@@ -701,6 +788,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
+                                    <property name="use_action_appearance">False</property>
                                     <property name="draw_indicator">True</property>
                                   </object>
                                   <packing>
@@ -715,6 +803,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
+                                    <property name="use_action_appearance">False</property>
                                     <property name="draw_indicator">True</property>
                                   </object>
                                   <packing>
@@ -1193,6 +1282,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
+                                    <property name="use_action_appearance">False</property>
                                     <signal name="clicked" handler="on_btnLoadTimeframe_clicked" swapped="no"/>
                                   </object>
                                   <packing>
@@ -1207,6 +1297,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
+                                    <property name="use_action_appearance">False</property>
                                     <signal name="clicked" handler="on_btnEditTimeframe_clicked" swapped="no"/>
                                   </object>
                                   <packing>
@@ -1221,6 +1312,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
+                                    <property name="use_action_appearance">False</property>
                                     <signal name="clicked" handler="on_btnDebug_clicked" swapped="no"/>
                                   </object>
                                   <packing>
@@ -1235,6 +1327,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
+                                    <property name="use_action_appearance">False</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -1248,6 +1341,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
+                                    <property name="use_action_appearance">False</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -1261,6 +1355,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
+                                    <property name="use_action_appearance">False</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -1274,6 +1369,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
+                                    <property name="use_action_appearance">False</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -1301,45 +1397,865 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkHBox" id="hbxDirectControlContainer">
+                          <object class="GtkNotebook" id="DirectControl">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
+                            <property name="can_focus">True</property>
                             <child>
-                              <object class="GtkAlignment" id="alignment1">
+                              <object class="GtkNotebook" id="Channels">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
+                                <property name="can_focus">True</property>
+                                <property name="show_tabs">False</property>
                                 <child>
-                                  <object class="GtkVBox" id="vboxDDSControl">
+                                  <object class="GtkHBox" id="hbxDirectControlContainer">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <child>
-                                      <object class="GtkComboBox" id="cmbDDSSelect">
+                                      <placeholder/>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child type="tab">
+                                  <object class="GtkLabel" id="label23">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="label" translatable="yes">page 1</property>
+                                  </object>
+                                  <packing>
+                                    <property name="tab_fill">False</property>
+                                  </packing>
+                                </child>
+                              </object>
+                            </child>
+                            <child type="tab">
+                              <object class="GtkLabel" id="Channel">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">Channels</property>
+                              </object>
+                              <packing>
+                                <property name="tab_fill">False</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkNotebook" id="Hardware choices">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <child>
+                                  <object class="GtkNotebook" id="AgilentModes">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="show_tabs">False</property>
+                                    <child>
+                                      <object class="GtkVBox" id="vboxAgilentPulseControl">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
-                                        <property name="model">lsDDSSelect</property>
+                                        <child>
+                                          <object class="GtkLabel" id="Agilent Pulse sub">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="label" translatable="yes">&lt;b&gt;Agilent pulse&lt;/b&gt;</property>
+                                            <property name="use_markup">True</property>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">True</property>
+                                            <property name="fill">True</property>
+                                            <property name="position">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkHButtonBox" id="hbuttonbox7">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <child>
+                                              <object class="GtkButton" id="btnAgilentPulseUpdate">
+                                                <property name="label" translatable="yes">Update</property>
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">True</property>
+                                                <property name="receives_default">True</property>
+                                                <property name="use_action_appearance">False</property>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">False</property>
+                                                <property name="position">0</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkButton" id="btnAgilentSineMode">
+                                                <property name="label" translatable="yes">Sine Mode</property>
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">True</property>
+                                                <property name="receives_default">True</property>
+                                                <property name="use_action_appearance">False</property>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">False</property>
+                                                <property name="position">1</property>
+                                              </packing>
+                                            </child>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="pack_type">end</property>
+                                            <property name="position">1</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkFrame" id="frame8">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="border_width">2</property>
+                                            <property name="label_xalign">0</property>
+                                            <property name="shadow_type">in</property>
+                                            <child>
+                                              <object class="GtkVBox" id="vbox19">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <child>
+                                                  <placeholder/>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkSpinButton" id="spnAgilentPulseLength">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                    <property name="invisible_char">•</property>
+                                                    <property name="invisible_char_set">True</property>
+                                                    <property name="primary_icon_activatable">False</property>
+                                                    <property name="secondary_icon_activatable">False</property>
+                                                    <property name="primary_icon_sensitive">True</property>
+                                                    <property name="secondary_icon_sensitive">True</property>
+                                                    <property name="adjustment">adjAgilentPulseLength</property>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">True</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">1</property>
+                                                  </packing>
+                                                </child>
+                                              </object>
+                                            </child>
+                                            <child type="label">
+                                              <object class="GtkLabel" id="label21">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="label" translatable="yes">&lt;b&gt;Pulse length (ns)&lt;/b&gt;</property>
+                                                <property name="use_markup">True</property>
+                                              </object>
+                                            </child>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">2</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkRadioButton" id="AgilentPulseExtTrig">
+                                            <property name="label" translatable="yes">Ext trigger</property>
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="receives_default">False</property>
+                                            <property name="use_action_appearance">False</property>
+                                            <property name="relief">none</property>
+                                            <property name="active">True</property>
+                                            <property name="draw_indicator">True</property>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">True</property>
+                                            <property name="fill">True</property>
+                                            <property name="position">3</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkRadioButton" id="AgilentPulseSSTrig">
+                                            <property name="label" translatable="yes">SS trigger</property>
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="receives_default">False</property>
+                                            <property name="use_action_appearance">False</property>
+                                            <property name="draw_indicator">True</property>
+                                            <property name="group">AgilentPulseExtTrig</property>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">True</property>
+                                            <property name="fill">True</property>
+                                            <property name="position">4</property>
+                                          </packing>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <child type="tab">
+                                      <object class="GtkLabel" id="Pulse Mode">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <property name="label" translatable="yes">page 1</property>
                                       </object>
                                       <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
+                                        <property name="tab_fill">False</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkVBox" id="vboxAgilentControl">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <child>
+                                          <object class="GtkLabel" id="label13">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="label" translatable="yes">&lt;b&gt;Agilent&lt;/b&gt;</property>
+                                            <property name="use_markup">True</property>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">True</property>
+                                            <property name="fill">True</property>
+                                            <property name="position">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkFrame" id="frame3">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="border_width">2</property>
+                                            <property name="label_xalign">0</property>
+                                            <property name="shadow_type">in</property>
+                                            <child>
+                                              <object class="GtkVBox" id="vbox14">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <child>
+                                                  <object class="GtkHScale" id="sclAgilentAmp">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                    <property name="adjustment">adjAgilentAmp</property>
+                                                    <property name="draw_value">False</property>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">True</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">0</property>
+                                                  </packing>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkSpinButton" id="spnAgilentAmp">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                    <property name="invisible_char">•</property>
+                                                    <property name="invisible_char_set">True</property>
+                                                    <property name="primary_icon_activatable">False</property>
+                                                    <property name="secondary_icon_activatable">False</property>
+                                                    <property name="primary_icon_sensitive">True</property>
+                                                    <property name="secondary_icon_sensitive">True</property>
+                                                    <property name="adjustment">adjAgilentAmp</property>
+                                                    <property name="digits">2</property>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">True</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">1</property>
+                                                  </packing>
+                                                </child>
+                                              </object>
+                                            </child>
+                                            <child type="label">
+                                              <object class="GtkLabel" id="label12">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="label" translatable="yes">&lt;b&gt;Amplitude:&lt;/b&gt;</property>
+                                                <property name="use_markup">True</property>
+                                              </object>
+                                            </child>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">1</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkHButtonBox" id="hbuttonbox4">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <child>
+                                              <object class="GtkButton" id="btnAgilentUpdate">
+                                                <property name="label" translatable="yes">Update</property>
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">True</property>
+                                                <property name="receives_default">True</property>
+                                                <property name="use_action_appearance">False</property>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">False</property>
+                                                <property name="position">0</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkButton" id="btnAgilentPulseMode">
+                                                <property name="label" translatable="yes">Pulse Mode</property>
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">True</property>
+                                                <property name="receives_default">True</property>
+                                                <property name="use_action_appearance">False</property>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">False</property>
+                                                <property name="position">1</property>
+                                              </packing>
+                                            </child>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="pack_type">end</property>
+                                            <property name="position">1</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkFrame" id="frame2">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="border_width">2</property>
+                                            <property name="label_xalign">0</property>
+                                            <property name="shadow_type">in</property>
+                                            <child>
+                                              <object class="GtkVBox" id="vbox13">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <child>
+                                                  <object class="GtkHScale" id="sclAgilentFrequency">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                    <property name="adjustment">adjAgilentFrequency</property>
+                                                    <property name="draw_value">False</property>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">True</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">0</property>
+                                                  </packing>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkSpinButton" id="spnAgilentFrequency">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                    <property name="invisible_char">•</property>
+                                                    <property name="invisible_char_set">True</property>
+                                                    <property name="primary_icon_activatable">False</property>
+                                                    <property name="secondary_icon_activatable">False</property>
+                                                    <property name="primary_icon_sensitive">True</property>
+                                                    <property name="secondary_icon_sensitive">True</property>
+                                                    <property name="adjustment">adjAgilentFrequency</property>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">True</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">1</property>
+                                                  </packing>
+                                                </child>
+                                              </object>
+                                            </child>
+                                            <child type="label">
+                                              <object class="GtkLabel" id="label11">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="label" translatable="yes">&lt;b&gt;Frequency:&lt;/b&gt;</property>
+                                                <property name="use_markup">True</property>
+                                              </object>
+                                            </child>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">2</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkCheckButton" id="chkAgilentEnableOutput">
+                                            <property name="label" translatable="yes">Enable Output</property>
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="receives_default">False</property>
+                                            <property name="use_action_appearance">False</property>
+                                            <property name="draw_indicator">True</property>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">3</property>
+                                          </packing>
+                                        </child>
+                                      </object>
+                                      <packing>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                    <child type="tab">
+                                      <object class="GtkLabel" id="Sine Mode">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <property name="label" translatable="yes">page 2</property>
+                                      </object>
+                                      <packing>
+                                        <property name="position">1</property>
+                                        <property name="tab_fill">False</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
+                                    <child type="tab">
+                                      <placeholder/>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child type="tab">
+                                  <object class="GtkLabel" id="AgilentModesLabel">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="label" translatable="yes">Agilent</property>
+                                  </object>
+                                  <packing>
+                                    <property name="tab_fill">False</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkNotebook" id="Agilent2Modes">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="show_tabs">False</property>
+                                    <child>
+                                      <object class="GtkVBox" id="vboxAgilent2PulseControl">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <child>
+                                          <object class="GtkLabel" id="Agilent Pulse sub2">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="label" translatable="yes">&lt;b&gt;Agilent 2 pulse&lt;/b&gt;</property>
+                                            <property name="use_markup">True</property>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">True</property>
+                                            <property name="fill">True</property>
+                                            <property name="position">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkHButtonBox" id="hbuttonbox8">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <child>
+                                              <object class="GtkButton" id="btnAgilent2PulseUpdate">
+                                                <property name="label" translatable="yes">Update</property>
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">True</property>
+                                                <property name="receives_default">True</property>
+                                                <property name="use_action_appearance">False</property>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">False</property>
+                                                <property name="position">0</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkButton" id="btnAgilent2SineMode">
+                                                <property name="label" translatable="yes">Sine Mode</property>
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">True</property>
+                                                <property name="receives_default">True</property>
+                                                <property name="use_action_appearance">False</property>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">False</property>
+                                                <property name="position">1</property>
+                                              </packing>
+                                            </child>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="pack_type">end</property>
+                                            <property name="position">1</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkFrame" id="frame6">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="border_width">2</property>
+                                            <property name="label_xalign">0</property>
+                                            <property name="shadow_type">in</property>
+                                            <child>
+                                              <object class="GtkVBox" id="vbox17">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <child>
+                                                  <placeholder/>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkSpinButton" id="spnAgilent2PulseLength">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                    <property name="invisible_char">•</property>
+                                                    <property name="invisible_char_set">True</property>
+                                                    <property name="primary_icon_activatable">False</property>
+                                                    <property name="secondary_icon_activatable">False</property>
+                                                    <property name="primary_icon_sensitive">True</property>
+                                                    <property name="secondary_icon_sensitive">True</property>
+                                                    <property name="adjustment">adjAgilent2PulseLength</property>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">True</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">1</property>
+                                                  </packing>
+                                                </child>
+                                              </object>
+                                            </child>
+                                            <child type="label">
+                                              <object class="GtkLabel" id="label18">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="label" translatable="yes">&lt;b&gt;Pulse length (ns)&lt;/b&gt;</property>
+                                                <property name="use_markup">True</property>
+                                              </object>
+                                            </child>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">2</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkRadioButton" id="Agilent2PulseExtTrig">
+                                            <property name="label" translatable="yes">Ext trigger</property>
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="receives_default">False</property>
+                                            <property name="use_action_appearance">False</property>
+                                            <property name="relief">none</property>
+                                            <property name="active">True</property>
+                                            <property name="draw_indicator">True</property>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">True</property>
+                                            <property name="fill">True</property>
+                                            <property name="position">3</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkRadioButton" id="Agilent2PulseSSTrig">
+                                            <property name="label" translatable="yes">SS trigger</property>
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="receives_default">False</property>
+                                            <property name="use_action_appearance">False</property>
+                                            <property name="draw_indicator">True</property>
+                                            <property name="group">Agilent2PulseExtTrig</property>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">True</property>
+                                            <property name="fill">True</property>
+                                            <property name="position">4</property>
+                                          </packing>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <child type="tab">
+                                      <object class="GtkLabel" id="Pulse Mode 2">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <property name="label" translatable="yes">page 1</property>
+                                      </object>
+                                      <packing>
+                                        <property name="tab_fill">False</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkVBox" id="vboxAgilentControl2">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <child>
+                                          <object class="GtkLabel" id="label14">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="label" translatable="yes">&lt;b&gt;Agilent2&lt;/b&gt;</property>
+                                            <property name="use_markup">True</property>
+                                            <property name="angle">0.02</property>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">True</property>
+                                            <property name="fill">True</property>
+                                            <property name="position">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkFrame" id="frame4">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="border_width">2</property>
+                                            <property name="label_xalign">0</property>
+                                            <property name="shadow_type">in</property>
+                                            <child>
+                                              <object class="GtkVBox" id="vbox15">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <child>
+                                                  <object class="GtkHScale" id="sclAgilentAmp2">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                    <property name="adjustment">adjAgilentAmp2</property>
+                                                    <property name="draw_value">False</property>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">True</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">0</property>
+                                                  </packing>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkSpinButton" id="spnAgilentAmp2">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                    <property name="invisible_char">•</property>
+                                                    <property name="invisible_char_set">True</property>
+                                                    <property name="primary_icon_activatable">False</property>
+                                                    <property name="secondary_icon_activatable">False</property>
+                                                    <property name="primary_icon_sensitive">True</property>
+                                                    <property name="secondary_icon_sensitive">True</property>
+                                                    <property name="adjustment">adjAgilentAmp2</property>
+                                                    <property name="digits">2</property>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">True</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">1</property>
+                                                  </packing>
+                                                </child>
+                                              </object>
+                                            </child>
+                                            <child type="label">
+                                              <object class="GtkLabel" id="label15">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="label" translatable="yes">&lt;b&gt;Amplitude:&lt;/b&gt;</property>
+                                                <property name="use_markup">True</property>
+                                              </object>
+                                            </child>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">1</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkHButtonBox" id="hbuttonbox5">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <child>
+                                              <object class="GtkButton" id="btnAgilent2Update">
+                                                <property name="label" translatable="yes">Update</property>
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">True</property>
+                                                <property name="receives_default">True</property>
+                                                <property name="use_action_appearance">False</property>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">False</property>
+                                                <property name="position">0</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkButton" id="btnAgilent2PulseMode">
+                                                <property name="label" translatable="yes">Pulse Mode</property>
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">True</property>
+                                                <property name="receives_default">True</property>
+                                                <property name="use_action_appearance">False</property>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">False</property>
+                                                <property name="position">1</property>
+                                              </packing>
+                                            </child>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="pack_type">end</property>
+                                            <property name="position">1</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkFrame" id="frame5">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="border_width">2</property>
+                                            <property name="label_xalign">0</property>
+                                            <property name="shadow_type">in</property>
+                                            <child>
+                                              <object class="GtkVBox" id="vbox16">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <child>
+                                                  <object class="GtkHScale" id="sclAgilentFrequency2">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                    <property name="adjustment">adjAgilentFrequency2</property>
+                                                    <property name="draw_value">False</property>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">True</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">0</property>
+                                                  </packing>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkSpinButton" id="spnAgilentFrequency2">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                    <property name="invisible_char">•</property>
+                                                    <property name="invisible_char_set">True</property>
+                                                    <property name="primary_icon_activatable">False</property>
+                                                    <property name="secondary_icon_activatable">False</property>
+                                                    <property name="primary_icon_sensitive">True</property>
+                                                    <property name="secondary_icon_sensitive">True</property>
+                                                    <property name="adjustment">adjAgilentFrequency2</property>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">True</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">1</property>
+                                                  </packing>
+                                                </child>
+                                              </object>
+                                            </child>
+                                            <child type="label">
+                                              <object class="GtkLabel" id="label16">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="label" translatable="yes">&lt;b&gt;Frequency:&lt;/b&gt;</property>
+                                                <property name="use_markup">True</property>
+                                              </object>
+                                            </child>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">2</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkCheckButton" id="chkAgilentEnableOutput2">
+                                            <property name="label" translatable="yes">Enable Output</property>
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="receives_default">False</property>
+                                            <property name="use_action_appearance">False</property>
+                                            <property name="draw_indicator">True</property>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">3</property>
+                                          </packing>
+                                        </child>
+                                      </object>
+                                      <packing>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                    <child type="tab">
+                                      <object class="GtkLabel" id="Sine Mode 2">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <property name="label" translatable="yes">page 2</property>
+                                      </object>
+                                      <packing>
+                                        <property name="position">1</property>
+                                        <property name="tab_fill">False</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
+                                    <child type="tab">
+                                      <placeholder/>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                                <child type="tab">
+                                  <object class="GtkLabel" id="Agilent2ModesLabel">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="label" translatable="yes">Agilent 2</property>
+                                  </object>
+                                  <packing>
+                                    <property name="position">1</property>
+                                    <property name="tab_fill">False</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkVBox" id="Rohde Schwarz">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <child>
+                                      <object class="GtkLabel" id="label19">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <property name="label" translatable="yes">&lt;b&gt;Rohde Schwarz&lt;/b&gt;</property>
+                                        <property name="use_markup">True</property>
+                                        <property name="angle">0.02</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">True</property>
+                                        <property name="fill">True</property>
                                         <property name="position">0</property>
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkHButtonBox" id="hbuttonbox2">
+                                      <object class="GtkHButtonBox" id="hbuttonbox9">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <child>
-                                          <object class="GtkButton" id="btnDDSUpdate">
+                                          <object class="GtkButton" id="btnRohSchPulseUpdate">
                                             <property name="label" translatable="yes">Update</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">True</property>
-                                            <signal name="clicked" handler="on_btnDDSUpdate_clicked" swapped="no"/>
+                                            <property name="use_action_appearance">False</property>
                                           </object>
                                           <packing>
                                             <property name="expand">False</property>
                                             <property name="fill">False</property>
                                             <property name="position">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkButton" id="btnRohSchStartOutput">
+                                            <property name="label" translatable="yes">Start Output</property>
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="receives_default">True</property>
+                                            <property name="use_action_appearance">False</property>
+                                            <property name="relief">none</property>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">1</property>
                                           </packing>
                                         </child>
                                       </object>
@@ -1351,22 +2267,127 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkFrame" id="frame1">
+                                      <object class="GtkFileChooserButton" id="filechooserbutton1">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">True</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">2</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="position">2</property>
+                                  </packing>
+                                </child>
+                                <child type="tab">
+                                  <object class="GtkLabel" id="Roh Schwarz">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="label" translatable="yes">Rohde Schwarz</property>
+                                  </object>
+                                  <packing>
+                                    <property name="position">2</property>
+                                    <property name="tab_fill">False</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkVBox" id="vboxSRSPulseControl">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <child>
+                                      <object class="GtkLabel" id="label17">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <property name="label" translatable="yes">&lt;b&gt;SRS Pulse&lt;/b&gt;</property>
+                                        <property name="use_markup">True</property>
+                                        <property name="angle">0.02</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">True</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkHButtonBox" id="hbuttonbox6">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <child>
+                                          <object class="GtkButton" id="btnSRSPulseUpdate">
+                                            <property name="label" translatable="yes">Update</property>
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="receives_default">True</property>
+                                            <property name="use_action_appearance">False</property>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkButton" id="btnSendPulse">
+                                            <property name="label" translatable="yes">Send Pulse</property>
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="receives_default">True</property>
+                                            <property name="use_action_appearance">False</property>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">1</property>
+                                          </packing>
+                                        </child>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">False</property>
+                                        <property name="pack_type">end</property>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkFrame" id="frame7">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <property name="border_width">2</property>
                                         <property name="label_xalign">0</property>
                                         <property name="shadow_type">in</property>
                                         <child>
-                                          <object class="GtkVBox" id="vbox6">
+                                          <object class="GtkVBox" id="vbox18">
                                             <property name="visible">True</property>
                                             <property name="can_focus">False</property>
                                             <child>
-                                              <object class="GtkHScale" id="sclDDSFrequency">
+                                              <object class="GtkCheckButton" id="checkAB">
+                                                <property name="label" translatable="yes">Include channel</property>
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">True</property>
-                                                <property name="adjustment">adjDDSFrequencyDirect</property>
-                                                <property name="draw_value">False</property>
+                                                <property name="receives_default">False</property>
+                                                <property name="use_action_appearance">False</property>
+                                                <property name="draw_indicator">True</property>
                                               </object>
                                               <packing>
                                                 <property name="expand">True</property>
@@ -1375,7 +2396,7 @@
                                               </packing>
                                             </child>
                                             <child>
-                                              <object class="GtkSpinButton" id="spnDDSFrequency">
+                                              <object class="GtkSpinButton" id="spnSRSAoffset">
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">True</property>
                                                 <property name="invisible_char">•</property>
@@ -1384,7 +2405,8 @@
                                                 <property name="secondary_icon_activatable">False</property>
                                                 <property name="primary_icon_sensitive">True</property>
                                                 <property name="secondary_icon_sensitive">True</property>
-                                                <property name="adjustment">adjDDSFrequencyDirect</property>
+                                                <property name="adjustment">adjSRSABPulseLength</property>
+                                                <property name="climb_rate">100</property>
                                               </object>
                                               <packing>
                                                 <property name="expand">True</property>
@@ -1395,10 +2417,10 @@
                                           </object>
                                         </child>
                                         <child type="label">
-                                          <object class="GtkLabel" id="label5">
+                                          <object class="GtkLabel" id="Aoffset">
                                             <property name="visible">True</property>
                                             <property name="can_focus">False</property>
-                                            <property name="label" translatable="yes">&lt;b&gt;Frequency:&lt;/b&gt;</property>
+                                            <property name="label" translatable="yes">&lt;b&gt;AB pulse Length(ns):&lt;/b&gt;</property>
                                             <property name="use_markup">True</property>
                                           </object>
                                         </child>
@@ -1410,12 +2432,48 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkCheckButton" id="chkDDSEnableOutput">
-                                        <property name="label" translatable="yes">Enable Output</property>
+                                      <object class="GtkFrame" id="frame9">
                                         <property name="visible">True</property>
-                                        <property name="can_focus">True</property>
-                                        <property name="receives_default">False</property>
-                                        <property name="draw_indicator">True</property>
+                                        <property name="can_focus">False</property>
+                                        <property name="border_width">2</property>
+                                        <property name="label_xalign">0</property>
+                                        <property name="shadow_type">in</property>
+                                        <child>
+                                          <object class="GtkVBox" id="vbox20">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <child>
+                                              <placeholder/>
+                                            </child>
+                                            <child>
+                                              <object class="GtkSpinButton" id="spnSRSBoffset">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">True</property>
+                                                <property name="invisible_char">•</property>
+                                                <property name="invisible_char_set">True</property>
+                                                <property name="primary_icon_activatable">False</property>
+                                                <property name="secondary_icon_activatable">False</property>
+                                                <property name="primary_icon_sensitive">True</property>
+                                                <property name="secondary_icon_sensitive">True</property>
+                                                <property name="adjustment">adjSRSRelativeDelay</property>
+                                                <property name="climb_rate">100</property>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">True</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">1</property>
+                                              </packing>
+                                            </child>
+                                          </object>
+                                        </child>
+                                        <child type="label">
+                                          <object class="GtkLabel" id="Boffset">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="label" translatable="yes">&lt;b&gt;Relative delay(ns):&lt;/b&gt;</property>
+                                            <property name="use_markup">True</property>
+                                          </object>
+                                        </child>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
@@ -1423,27 +2481,289 @@
                                         <property name="position">3</property>
                                       </packing>
                                     </child>
+                                    <child>
+                                      <object class="GtkFrame" id="frame10">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <property name="border_width">2</property>
+                                        <property name="label_xalign">0</property>
+                                        <property name="shadow_type">in</property>
+                                        <child>
+                                          <object class="GtkVBox" id="vbox21">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <child>
+                                              <object class="GtkCheckButton" id="checkCD">
+                                                <property name="label" translatable="yes">Include channel</property>
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">True</property>
+                                                <property name="receives_default">False</property>
+                                                <property name="use_action_appearance">False</property>
+                                                <property name="draw_indicator">True</property>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">True</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">0</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkSpinButton" id="spnSRSCoffset">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">True</property>
+                                                <property name="invisible_char">•</property>
+                                                <property name="invisible_char_set">True</property>
+                                                <property name="primary_icon_activatable">False</property>
+                                                <property name="secondary_icon_activatable">False</property>
+                                                <property name="primary_icon_sensitive">True</property>
+                                                <property name="secondary_icon_sensitive">True</property>
+                                                <property name="adjustment">adjSRSCDPulseLength</property>
+                                                <property name="climb_rate">100</property>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">True</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">1</property>
+                                              </packing>
+                                            </child>
+                                          </object>
+                                        </child>
+                                        <child type="label">
+                                          <object class="GtkLabel" id="Coffset1">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="label" translatable="yes">&lt;b&gt;CD pulse length(ns):&lt;/b&gt;</property>
+                                            <property name="use_markup">True</property>
+                                          </object>
+                                        </child>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">False</property>
+                                        <property name="position">4</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
+                                    <child>
+                                      <object class="GtkRadioButton" id="ExternalTriggerSRSPulse">
+                                        <property name="label" translatable="yes">External Trigger</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">False</property>
+                                        <property name="use_action_appearance">False</property>
+                                        <property name="active">True</property>
+                                        <property name="draw_indicator">True</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">True</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">6</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkRadioButton" id="SStriggerSRSPulse">
+                                        <property name="label" translatable="yes">SS trigger</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">False</property>
+                                        <property name="use_action_appearance">False</property>
+                                        <property name="xalign">0.52999997138977051</property>
+                                        <property name="yalign">0.51999998092651367</property>
+                                        <property name="draw_indicator">True</property>
+                                        <property name="group">ExternalTriggerSRSPulse</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">True</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">7</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
                                   </object>
+                                  <packing>
+                                    <property name="position">3</property>
+                                  </packing>
+                                </child>
+                                <child type="tab">
+                                  <object class="GtkLabel" id="SRS Pulse">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="label" translatable="yes">SRS Pulse</property>
+                                  </object>
+                                  <packing>
+                                    <property name="position">3</property>
+                                    <property name="tab_fill">False</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkAlignment" id="alignment1">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <child>
+                                      <object class="GtkVBox" id="vboxDDSControl">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <child>
+                                          <object class="GtkComboBox" id="cmbDDSSelect">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="model">lsDDSSelect</property>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkHButtonBox" id="hbuttonbox2">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <child>
+                                              <object class="GtkButton" id="btnDDSUpdate">
+                                                <property name="label" translatable="yes">Update</property>
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">True</property>
+                                                <property name="receives_default">True</property>
+                                                <property name="use_action_appearance">False</property>
+                                                <signal name="clicked" handler="on_btnDDSUpdate_clicked" swapped="no"/>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">False</property>
+                                                <property name="position">0</property>
+                                              </packing>
+                                            </child>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="pack_type">end</property>
+                                            <property name="position">1</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkFrame" id="frame1">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="border_width">2</property>
+                                            <property name="label_xalign">0</property>
+                                            <property name="shadow_type">in</property>
+                                            <child>
+                                              <object class="GtkVBox" id="vbox6">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <child>
+                                                  <object class="GtkHScale" id="sclDDSFrequency">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                    <property name="adjustment">adjDDSFrequencyDirect</property>
+                                                    <property name="draw_value">False</property>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">True</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">0</property>
+                                                  </packing>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkSpinButton" id="spnDDSFrequency">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                    <property name="invisible_char">•</property>
+                                                    <property name="invisible_char_set">True</property>
+                                                    <property name="primary_icon_activatable">False</property>
+                                                    <property name="secondary_icon_activatable">False</property>
+                                                    <property name="primary_icon_sensitive">True</property>
+                                                    <property name="secondary_icon_sensitive">True</property>
+                                                    <property name="adjustment">adjDDSFrequencyDirect</property>
+                                                  </object>
+                                                  <packing>
+                                                    <property name="expand">True</property>
+                                                    <property name="fill">True</property>
+                                                    <property name="position">1</property>
+                                                  </packing>
+                                                </child>
+                                              </object>
+                                            </child>
+                                            <child type="label">
+                                              <object class="GtkLabel" id="label5">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="label" translatable="yes">&lt;b&gt;Frequency:&lt;/b&gt;</property>
+                                                <property name="use_markup">True</property>
+                                              </object>
+                                            </child>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">2</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkCheckButton" id="chkDDSEnableOutput">
+                                            <property name="label" translatable="yes">Enable Output</property>
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="receives_default">False</property>
+                                            <property name="use_action_appearance">False</property>
+                                            <property name="draw_indicator">True</property>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">3</property>
+                                          </packing>
+                                        </child>
+                                      </object>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="position">4</property>
+                                  </packing>
+                                </child>
+                                <child type="tab">
+                                  <object class="GtkLabel" id="DDS">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="label" translatable="yes">DDS</property>
+                                  </object>
+                                  <packing>
+                                    <property name="position">4</property>
+                                    <property name="tab_fill">False</property>
+                                  </packing>
                                 </child>
                               </object>
                               <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="pack_type">end</property>
-                                <property name="position">0</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                            <child type="tab">
+                              <object class="GtkLabel" id="HardwareChoices">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">Hardware choices</property>
+                              </object>
+                              <packing>
+                                <property name="position">1</property>
+                                <property name="tab_fill">False</property>
                               </packing>
                             </child>
                           </object>
                           <packing>
                             <property name="position">1</property>
-                            <property name="tab_fill">False</property>
                           </packing>
                         </child>
                         <child type="tab">
                           <object class="GtkLabel" id="label6">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Direct Control</property>
+                            <property name="label" translatable="yes">page 2</property>
                           </object>
                           <packing>
                             <property name="position">1</property>
@@ -1470,6 +2790,8 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
+                            <property name="use_action_appearance">False</property>
+                            <property name="yalign">0.51999998092651367</property>
                             <signal name="clicked" handler="on_btnTimeframeVsDirectControl_clicked" swapped="no"/>
                           </object>
                           <packing>
@@ -1484,6 +2806,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
+                            <property name="use_action_appearance">False</property>
                             <signal name="clicked" handler="quit" swapped="no"/>
                           </object>
                           <packing>

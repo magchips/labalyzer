@@ -39,6 +39,10 @@ from labcontrol.NIDAQOutputController import NIDAQOutputController
 from labcontrol.ViewpointController import ViewpointController
 from labcontrol.AndorController import AndorController
 from labcontrol.ScopeController import ScopeController
+from labcontrol.AgilentController import AgilentController
+from labcontrol.AgilentController2 import AgilentController2
+from labcontrol.SRSPulseController import SRSPulseController
+from labcontrol.RohSchController import RohSchController
 
 # settings
 from labalyzer.LabalyzerSettings import settings
@@ -97,6 +101,15 @@ class TimeframeController:
 		self.__vpc.initialize()
 		self.__andor = AndorController()
 		self.__andor.initialize()
+		self.__agilent = AgilentController('labalyzer')
+		self.__agilent2 = AgilentController2('labalyzer')
+		self.__agilent.initialize()
+		self.__agilent2.initialize()
+		self.__pulse = SRSPulseController('labalyzer')
+		self.__pulse.initialize()
+		self.__rohSch = RohSchController('labalyzer')
+		self.__rohSch.initialize()
+
 		try:
 			self.__scope = ScopeController()
 		except: # probably the scope is not connected
@@ -127,6 +140,8 @@ class TimeframeController:
 			today = datetime.now().strftime('%Y-%m-%d %a')
 			if not os.path.exists(today):
 				os.mkdir(today)
+			if not os.path.exists(os.path.join(today, 'continuous')):
+				os.mkdir(os.path.join(today, 'continuous'))
 			os.chdir(today)
 		except OSError: 
 			logger.error("Could not create data directory")
@@ -348,6 +363,54 @@ class TimeframeController:
 		cmd = TimeframeCompiler.translateDDSCommand(DDSCMD_FIXED, frequency = int(frequency*1000)) # from kHz to Hz
 		executeDDSCommand(cmd)
 	
+	def directControlAgilent(self, frequency,amplitude,enable):
+		'''send new value to Agilent Function Generator'''
+		if enable is True:
+			self.__agilent.setFrequency(frequency)
+			self.__agilent.setAmplitude(amplitude)
+			self.__agilent.setOffset(0)
+			logger.info("sending " + str(frequency)+ " Hz to Agilent")
+
+	def directControlAgilent2(self, frequency,amplitude,enable):
+		'''send new value to Agilent Function Generator'''
+		if enable is True:
+			self.__agilent2.setFrequency(frequency)
+			self.__agilent2.setAmplitude(amplitude)
+			self.__agilent2.setOffset(0)
+			logger.info("sending " + str(frequency)+ " Hz to Agilent")
+
+	def directControlAgilentPulse(self, pulse_length, mode):
+		self.__agilent.setPulse(pulse_length)
+		self.__agilent.setBurstMode()
+		self.__agilent.updateBurstMode(mode)
+
+	def directControlAgilent2Pulse(self, pulse_length, mode):
+		self.__agilent2.setPulse(pulse_length)
+		self.__agilent2.setBurstMode()
+		self.__agilent2.updateBurstMode(mode)
+
+	def directControlSRSPulse(self, channel_offsets, mode):
+		'''send the command to start the pulse. Can be expanded to include other adjustable features'''
+		self.__pulse.preparePulse(channel_offsets, mode)
+
+	def sendSRSPulse(self):
+		self.__pulse.sendPulse()
+
+	def iniSine(self):
+		self.__agilent.setSine()
+		
+	def iniBurst(self):
+		self.__agilent.setBurstMode()
+		
+	def iniSine2(self):
+		self.__agilent2.setSine()
+		
+	def iniBurst2(self):
+		self.__agilent2.setBurstMode()
+
+	def startRohSchOutput(file_name):
+		self.__rohSch.stableOutput(file_name)
+
 	def startTimeframe(self):
 		'''start new timeframe'''
 		logger.debug("attempting to start timeframe")
@@ -356,12 +419,18 @@ class TimeframeController:
 			if not self.attemptStateChange(MODE_STOPPED):
 				logger.error('attempt to stop timeframe failed, but no TF compiled. forcing MODE to STOP')
 			return False
+		self.__agilent.startOutput(self.__data[3])
+		self.__agilent2.startOutput(self.__data[4])
+		self.__pulse.startOutput(self.__data[5])
+		self.__rohSch.startOutput(self.__data[6])
+		logger.debug('Agilent waveform generator initialized')
 		self.__nc.programmeChannels(self.__data[0])
 		self.__nc.startTask()
 		self.__vpc.programmeChannels(self.__data[1])
 		self.__vpc.start()
 		logger.debug('viewpoint has started, preparing camera')
 		self.__andor.startAcquisition(self.__data[2])
+		logger.debug('Camera initialized')
 		logger.debug('timeframe has started')
 		
 		if self.mode == MODE_SCAN:
@@ -370,6 +439,8 @@ class TimeframeController:
 			if self.scanInfo == None:
 				pass
 			else:
+				# we have to save the timeframe now, rather than in acquireData, as
+				# there it will already be changed for the next run
 				self.scanParameters.timestamp = datetime.now().strftime('/%Y%m%d-%H%M%S-')
 				baseName = self.scanParameters.folder + self.scanParameters.timestamp
 				saveTimeframe(baseName + 'timeframe.csv', self.timeframe)
@@ -423,8 +494,8 @@ class TimeframeController:
 		absorption = self.__andor.getImage()
 		light = self.__andor.getImage()
 		dark = self.__andor.getImage()
-		upper = 1.*(absorption - dark)
-		lower = 1.*(light - dark)
+		upper = 1.*(absorption)
+		lower = 1.*(light)
 		prod = upper*lower
 		upper = numpy.where(prod > 0, upper, 1)
 		lower = numpy.where(prod > 0, lower, 1)				
@@ -453,7 +524,7 @@ class TimeframeController:
 			try:
 				baseName = self.scanParameters.folder + self.scanParameters.timestamp
 			except TypeError: # thrown if main.saveAll = True and MODE_SCAN = False, as scanParameter values are then None
-				baseName = './' + datetime.now().strftime('/%Y%m%d-%H%M%S-')
+				baseName = './continuous/' + datetime.now().strftime('/%Y%m%d-%H%M%S-')
 			savePGM(baseName + 'absorption.pgm', absorption)
 			savePGM(baseName + 'light.pgm', light)
 			savePGM(baseName + 'dark.pgm', dark)
