@@ -28,7 +28,7 @@ import os, pickle
 import logging
 logger = logging.getLogger('labalyzer')
 
-SETTINGS_VERSION = 1.0
+SETTINGS_VERSION = 1.1
 class AnalogChannelDescriptor:
 	'''describes analog channels'''
 	def __init__(self, boardNumber, channelNumber, minvalue=-10, maxvalue=10, scalefactor=1):
@@ -176,8 +176,8 @@ class LabalyzerSettings(dict):
 		self['DigitalChannels']['1, 14'] = DigitalChannelDescriptor(1, 14, 'open', 'shut')
 		self['DigitalChannels']['1, 15'] = DigitalChannelDescriptor(1, 15)
 
-		self['DigitalChannels']['2, 0'] = DigitalChannelDescriptor(2, 0, 'high', 'low')
-		self['DigitalChannels']['2, 1'] = DigitalChannelDescriptor(2, 1, 'open', 'shut')
+		self['DigitalChannels']['Red AOM'] = DigitalChannelDescriptor(2, 0, 'open', 'shut')
+		self['DigitalChannels']['Blue EOM'] = DigitalChannelDescriptor(2, 1, 'open', 'shut')
 		self['DigitalChannels']['2, 2'] = DigitalChannelDescriptor(2, 2, 'open', 'shut')
 		self['DigitalChannels']['2, 3'] = DigitalChannelDescriptor(2, 3, 'open', 'shut')
 		self['DigitalChannels']['2, 4'] = DigitalChannelDescriptor(2, 4, 'open', 'shut')
