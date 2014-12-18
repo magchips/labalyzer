@@ -70,11 +70,11 @@ class ScanselectorDialog(gtk.Dialog):
 			self.lblColname[i] = builder.get_object('lblColname' + str(i+1))
 			self.chkEnable[i] = builder.get_object('chk_lvl' + str(i + 1))
 
-			self.adjStart[i] = gtk.Adjustment(0, -1e6, 1e6, 1, 1)
+			self.adjStart[i] = gtk.Adjustment(0, -50e6, 50e6, 1, 1)
 			self.adjStart[i].connect('value-changed', self.parameterChanged, i, 'start')
 			self.spinStart[i] = builder.get_object('spinStart' + str(i+1))
 			self.spinStart[i].set_adjustment(self.adjStart[i])
-			self.adjEnd[i] = gtk.Adjustment(0, -1e6, 1e6, 1, 1)
+			self.adjEnd[i] = gtk.Adjustment(0, -50e6, 50e6, 1, 1)
 			self.adjEnd[i].connect('value-changed', self.parameterChanged, i, 'end')
 			self.spinEnd[i] = builder.get_object('spinEnd' + str(i+1))
 			self.spinEnd[i].set_adjustment(self.adjEnd[i])

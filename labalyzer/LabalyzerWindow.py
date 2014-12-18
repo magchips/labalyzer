@@ -1,16 +1,16 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: tab; tab-width: 2 -*-
 ### BEGIN LICENSE
 # Copyright (C) 2010 <Atreju Tauschinsky> <Atreju.Tauschinsky@gmx.de>
-# This program is free software: you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License version 3, as published 
+# This program is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License version 3, as published
 # by the Free Software Foundation.
-# 
-# This program is distributed in the hope that it will be useful, but 
-# WITHOUT ANY WARRANTY; without even the implied warranties of 
-# MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR 
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranties of
+# MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR
 # PURPOSE.  See the GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License along 
+#
+# You should have received a copy of the GNU General Public License along
 # with this program.  If not, see <http://www.gnu.org/licenses/>.
 ### END LICENSE
 
@@ -128,7 +128,7 @@ class LabalyzerWindow(Window):
 		cmbImageSelector = builder.get_object('cmbImageSelector')
 		cell = gtk.CellRendererText()
 		cmbImageSelector.pack_start(cell, True)
-		cmbImageSelector.add_attribute(cell, 'text', 0)		
+		cmbImageSelector.add_attribute(cell, 'text', 0)
 
 		# restore button states from settings, and connect widgets to settings changer
 		for key in widget_data:
@@ -183,14 +183,14 @@ class LabalyzerWindow(Window):
 	def on_btnSaveCurrentImage_clicked(self, _widget, data=None):
  		image = self.plotter.getImageAsPIL()
  		if image is None:
-			return 
+			return
 		filename = './thispicture_'+datetime.datetime.utcnow().strftime("%Y-%m-%d-%H%M%S")+'.jpg'  # ask for filename and location, added above this time thing
 		image.convert('RGB').save(filename)
 
 	def on_chkScopeChannelSelect_toggled(self, widget, data=None): # beginnetje gemaakt door atreju , gebruiken on_chkScopeChannelSelect_toggled
 		if data in settings['scope.channels']:
 			indx = settings['scope.channels'].index(data)
-			del settings['scope.channels'][indx]	
+			del settings['scope.channels'][indx]
 		else:
 			settings['scope.channels'].append(data)
 			settings['scope.channels'] = sorted(settings['scope.channels'])
@@ -199,7 +199,7 @@ class LabalyzerWindow(Window):
 	def loadTimeframe(self, filename):
 		'''load timeframe'''
 		fn = self.timeframeController.setFilename(filename)
-		if fn is not None: 
+		if fn is not None:
 			self.pbTimeframeProgress.set_text(fn)
 
 	def on_btnTimeframeVsDirectControl_clicked(self, widget, _data=None):
@@ -224,10 +224,10 @@ class LabalyzerWindow(Window):
 		####################################
 		dioChannels = dict()
 		for k in settings['DigitalChannels']:
-			dioChannels[settings['DigitalChannels'][k].channelNumber] = k
+			dioChannels[(settings['DigitalChannels'][k].portNumber, settings['DigitalChannels'][k].channelNumber)] = k
 		sKeys = sorted(dioChannels.iterkeys())
 
-		for j in range(2):
+		for j in range(8):
 			tbl = gtk.Table(8, 2, False)
 			for i in range(8):
 				lbl = gtk.Label(dioChannels[sKeys[8*j+i]] + ': ')
@@ -289,6 +289,84 @@ class LabalyzerWindow(Window):
 		freq = self.builder.get_object('adjDDSFrequencyDirect').get_value()
 		output = self.builder.get_object('chkDDSEnableOutput').get_active()
 		self.timeframeController.directControlChangeDDS(freq, output)
+
+	def on_btnAgilentUpdate_clicked(self, _widget, _data=None):
+		'''Agilent output in direct mode'''
+		freq = self.builder.get_object('adjAgilentFrequency').get_value()
+		amp = self.builder.get_object('adjAgilentAmp').get_value()
+		output = self.builder.get_object('chkAgilentEnableOutput').get_active()
+		self.timeframeController.directControlAgilent(freq,amp,output)
+
+	def on_btnAgilent2Update_clicked(self, _widget, _data=None):
+		'''Agilent output in direct mode'''
+		freq = self.builder.get_object('adjAgilentFrequency2').get_value()
+		amp = self.builder.get_object('adjAgilentAmp2').get_value()
+		output = self.builder.get_object('chkAgilentEnableOutput2').get_active()
+		self.timeframeController.directControlAgilent2(freq,amp,output)
+
+	def on_btnAgilentPulseUpdate_clicked(self, _widget, _data = None):
+		pulse_length = str(self.builder.get_object('adjAgilentPulseLength').get_value()) + "E-9"
+		ET = self.builder.get_object('AgilentPulseExtTrig').get_active()
+		if ET == True:
+			mode = "Ext"
+		else:
+			mode = "SS"
+		self.timeframeController.directControlAgilentPulse(pulse_length, mode)
+
+	def on_btnAgilent2PulseUpdate_clicked(self, _widget, _data = None):
+		pulse_length = str(self.builder.get_object('adjAgilent2PulseLength').get_value())
+		ET = self.builder.get_object('Agilent2PulseExtTrig').get_active()
+		if ET == True:
+			mode = "Ext"
+		else:
+			mode = "SS"
+		self.timeframeController.directControlAgilent2Pulse(pulse_length, mode)
+
+
+
+	def on_btnAgilentSineMode_clicked(self, _widget, _data=None):
+		tab = self.builder.get_object('AgilentModes')
+		tab.set_current_page(1)
+		self.timeframeController.iniSine()
+
+
+	def on_btnAgilentPulseMode_clicked(self, _widget, _data=None):
+		tab = self.builder.get_object('AgilentModes')
+		tab.set_current_page(0)
+		self.timeframeController.iniBurst()
+
+
+	def on_btnAgilent2SineMode_clicked(self, _widget, _data=None):
+		tab = self.builder.get_object('Agilent2Modes')
+		tab.set_current_page(1)
+		self.timeframeController.iniSine2()
+
+
+	def on_btnAgilent2PulseMode_clicked(self, _widget, _data=None):
+		tab = self.builder.get_object('Agilent2Modes')
+		tab.set_current_page(0)
+		self.timeframeController.iniBurst2()
+
+
+	def on_btnSRSPulseUpdate_clicked(self, _widget, _data=None):
+		"""SRS pulse output in direct mode"""
+		ET = self.builder.get_object('ExternalTriggerSRSPulse').get_active()
+		channel_conf = {}
+		if ET == True:
+			mode = "Ext"
+		else:
+			mode = "SS"
+
+		channel_conf["RD"] = self.builder.get_object('adjSRSRelativeDelay').get_value()
+		channel_conf["AB"] = self.builder.get_object('adjSRSABPulseLength').get_value()
+		channel_conf["CD"] = self.builder.get_object('adjSRSCDPulseLength').get_value()
+		
+		self.timeframeController.directControlSRSPulse(channel_conf, mode)
+
+	def on_btnSendPulse_clicked(self, _widget, _data=None):
+		"""docstring for on_btnSendPulse_clicked"""
+		self.timeframeController.sendSRSPulse()
+
 
 	def on_cmbImageSelector(self, widget, _data=None):
 		'''shown image changed'''
@@ -397,11 +475,11 @@ Please edit 'widget_methods' in %s"""
 		prms['rowname'] = rowname
 		try:
 			prms['start'] = float(self.timeframeController.timeframe[path][column_id])
-		except ValueError: 
+		except ValueError:
 			prms['start'] = 0
 		try:
 			prms['end'] = float(self.timeframeController.timeframe[path][column_id])
-		except ValueError: 
+		except ValueError:
 			prms['end'] = 0
 		prms['original'] = self.timeframeController.timeframe[path][column_id]
 		prms['steps'] = 2
@@ -417,7 +495,7 @@ Please edit 'widget_methods' in %s"""
 		scanDialog.setScanParameters(pass_parameters)
 		response = scanDialog.run()
 		scanDialog.destroy()
-		if response == gtk.RESPONSE_OK: 
+		if response == gtk.RESPONSE_OK:
 			# if ok was pressed, we copy pass_parameters (which have been changed by the dialog) over to our scan parameters.
 			# if cancel was pressed we do nothing
 			self.timeframeController.scanParameters = pass_parameters

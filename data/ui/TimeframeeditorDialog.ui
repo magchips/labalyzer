@@ -86,7 +86,6 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
               </object>
               <packing>
@@ -101,7 +100,6 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
               </object>
               <packing>
@@ -125,16 +123,30 @@
             <property name="n_rows">2</property>
             <property name="n_columns">3</property>
             <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
               <object class="GtkVBox" id="vbox2">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="spacing">10</property>
                 <child>
-                  <object class="GtkTreeView" id="twDigitalChannels">
+                  <object class="GtkScrolledWindow" id="scrolledwindow3">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="model">lsDigitalChannels</property>
-                    <property name="search_column">0</property>
+                    <property name="hscrollbar_policy">automatic</property>
+                    <property name="vscrollbar_policy">automatic</property>
+                    <child>
+                      <object class="GtkTreeView" id="twDigitalChannels">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="model">lsDigitalChannels</property>
+                        <property name="search_column">0</property>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -143,11 +155,19 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkTreeView" id="twAnalogChannels">
+                  <object class="GtkScrolledWindow" id="scrolledwindow4">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="model">lsAnalogChannels</property>
-                    <property name="search_column">0</property>
+                    <property name="hscrollbar_policy">automatic</property>
+                    <property name="vscrollbar_policy">automatic</property>
+                    <child>
+                      <object class="GtkTreeView" id="twAnalogChannels">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="model">lsAnalogChannels</property>
+                        <property name="search_column">0</property>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -159,8 +179,7 @@
               <packing>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
-                <property name="x_options">GTK_FILL</property>
-                <property name="x_padding">7</property>
+                <property name="x_padding">3</property>
               </packing>
             </child>
             <child>
@@ -217,7 +236,6 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="use_stock">True</property>
                         <accelerator key="o" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <signal name="clicked" handler="on_btnOpen_clicked" swapped="no"/>
@@ -234,7 +252,6 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <property name="use_action_appearance">False</property>
                         <accelerator key="r" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <signal name="clicked" handler="on_btnReload_clicked" swapped="no"/>
                       </object>
@@ -250,7 +267,6 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="use_stock">True</property>
                         <accelerator key="s" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <signal name="clicked" handler="on_btnSave_clicked" swapped="no"/>
@@ -267,7 +283,6 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="use_stock">True</property>
                         <signal name="clicked" handler="on_btnSaveAs_clicked" swapped="no"/>
                       </object>
@@ -293,10 +308,10 @@
                     <child>
                       <object class="GtkButton" id="btnInsertLine">
                         <property name="label" translatable="yes">Insert Line</property>
+                        <property name="related_action">InsertLine</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <property name="related_action">InsertLine</property>
                         <property name="use_underline">True</property>
                         <accelerator key="i" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
@@ -309,10 +324,10 @@
                     <child>
                       <object class="GtkButton" id="btnCutLine">
                         <property name="label" translatable="yes">Cut Line</property>
+                        <property name="related_action">CutLine</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <property name="related_action">CutLine</property>
                         <property name="use_underline">True</property>
                         <accelerator key="x" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
@@ -325,10 +340,10 @@
                     <child>
                       <object class="GtkButton" id="btnCopyLine">
                         <property name="label" translatable="yes">Copy Line</property>
+                        <property name="related_action">CopyLine</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <property name="related_action">CopyLine</property>
                         <property name="use_underline">True</property>
                         <accelerator key="c" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
@@ -341,10 +356,10 @@
                     <child>
                       <object class="GtkButton" id="btnPasteLine">
                         <property name="label" translatable="yes">Paste Line</property>
+                        <property name="related_action">PasteLine</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <property name="related_action">PasteLine</property>
                         <property name="use_underline">True</property>
                         <accelerator key="v" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
@@ -370,12 +385,6 @@
                 <property name="top_attach">1</property>
                 <property name="bottom_attach">2</property>
               </packing>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
             </child>
           </object>
           <packing>

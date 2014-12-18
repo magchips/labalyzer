@@ -1,16 +1,16 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: tab; tab-width: 2 -*-
 ### BEGIN LICENSE
 # Copyright (C) 2010 <Atreju Tauschinsky> <Atreju.Tauschinsky@gmx.de>
-# This program is free software: you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License version 3, as published 
+# This program is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License version 3, as published
 # by the Free Software Foundation.
-# 
-# This program is distributed in the hope that it will be useful, but 
-# WITHOUT ANY WARRANTY; without even the implied warranties of 
-# MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR 
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranties of
+# MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR
 # PURPOSE.  See the GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License along 
+#
+# You should have received a copy of the GNU General Public License along
 # with this program.  If not, see <http://www.gnu.org/licenses/>.
 ### END LICENSE
 
@@ -95,8 +95,10 @@ class TimeframeCompiler:
 		abs_time = 0							# keep track of total time up to a given entry
 		analogCommands = defaultdict(list)		# store analog commands
 		digitalCommands = defaultdict(list)		# store digital commands
-		cameraSettings = {"AcquisitionMode" : ANDOR_KINETIC, "ROI X min" : 1, "ROI Y min" : 1, "ROI X max" : 1024, "ROI Y max" : 1024, "Binning" : 1, "Exposure" : 0.2}
-
+		cameraSettings = {"AcquisitionMode" : ANDOR_KINETIC, "X min" : 1, "Y min" : 1, "X max" : 1024, "Y max" : 1024, "Binning" : 1, "Exposure" : 0.2}
+		agilentSettings = {"Freq" : 5000, "Amp" : 1, "PulseLength": 0} #goes into pulse mode if PulseLength isn't zero
+		agilentSettings2 = {"Freq" : 5000, "Amp" : 1, "PulseLength": 0}
+		srsPulseSettings = {"ABPulseLength": 200, "CDPulseLength": 200, "RelativeDelay": 200, "PulseLength":0} #values are in nm. RD can be negative
 		errorEncountered = False
 
 		trigBoard = settings['DigitalChannels']['AnalogTrigger'].portNumber							# needed multiple times below
@@ -271,6 +273,39 @@ class TimeframeCompiler:
 					row[COL_COLORHINT] = '#FF0000'
 					errorEncountered = True
 					
+			elif rowtype == ROWTYPE_AGILENT:
+				item = row[COL_AGILENTITEM]
+				if item in agilentSettings: # we only accept the keys defined already above. other keys won't be understood and hence have to be refused here
+					agilentSettings[item] = self.__evaluateCell__(row[COL_VALUE])
+					row[COL_ERROR] = 'Agilent information set'
+					row[COL_COLORHINT] = '#00FFFF'
+				else:
+					row[COL_ERROR] = 'No valid Agilent setting'
+					row[COL_COLORHINT] = '#FF0000'
+					errorEncountered = True
+
+			elif rowtype == ROWTYPE_AGILENT2:
+				item = row[COL_AGILENTITEM]
+				if item in agilentSettings2: # we only accept the keys defined already above. other keys won't be understood and hence have to be refused here
+					agilentSettings2[item] = self.__evaluateCell__(row[COL_VALUE])
+					row[COL_ERROR] = 'Agilent information set'
+					row[COL_COLORHINT] = '#00FFFF'
+				else:
+					row[COL_ERROR] = 'No valid Agilent setting'
+					row[COL_COLORHINT] = '#FF0000'
+					errorEncountered = True
+
+			elif rowtype == ROWTYPE_SRSPULSE:
+				item = row[COL_SRSPULSEITEM]
+				if item in srsPulseSettings: # we only accept the keys defined already above. other keys won't be understood and hence have to be refused here
+					srsPulseSettings[item] = self.__evaluateCell__(row[COL_VALUE])
+					row[COL_ERROR] = 'SRS pulse information set'
+					row[COL_COLORHINT] = '#00FFFF'
+				else:
+					row[COL_ERROR] = 'No valid SRS Pulse setting'
+					row[COL_COLORHINT] = '#FF0000'
+					errorEncountered = True
+
 			else:
 				row[COL_ERROR] = 'unknown device'
 				row[COL_COLORHINT] = '#FF0000'
@@ -334,10 +369,19 @@ class TimeframeCompiler:
 						DIOSamples[6*i+2] |= entry[1]	# entry[1] already holds the bitmask for this channel (set above), not just the real channelnumber7
 					else:
 						DIOSamples[6*i+2] &= entry[1]	# entry[1] already holds the inverted trigmask as set above
+				
 				elif entry[0] == 1:								# this is for the DDS programming; they always set the entire bitline, so we don't have to xor anything...
 					DIOSamples[6*i+3] = entry[1]
+				elif entry[0] == 2: # entry[0] is the board number
+					if entry[2] == 1: # entry[2] is 1 or 0 for high or low
+						DIOSamples[6*i+4] |= entry[1]	# entry[1] already holds the bitmask for this channel (set above), not just the real channelnumber7
+					else:
+						DIOSamples[6*i+4] &= entry[1]	# entry[1] already holds the inverted trigmask as set above
 				elif entry[0] == 3:								# moving the trigger for the analog channels to a dedicated port (D in this case) speeds compilation up by 30% (maybe not!)
-					DIOSamples[6*i+5] = entry[1]		# but of course it blocks 15 digital lines, and might lead to problems with the update speed. needs to be tested!
+					if entry[2] == 1: # entry[2] is 1 or 0 for high or low
+						DIOSamples[6*i+5] |= entry[1]	# entry[1] already holds the bitmask for this channel (set above), not just the real channelnumber7
+					else:
+						DIOSamples[6*i+5] &= entry[1]	# entry[1] already holds the inverted trigmask as set above
 
 		logger.info("total timeframe time is " + str(totalTime/1000.) + ' ms')
 		logger.info("number of analog commands is " + str(len(analogCommands)))
@@ -348,22 +392,13 @@ class TimeframeCompiler:
 #		for k in range(0, 8):
 #			plt.plot(numpy.array(sorted(analogKeys))/1.e6, AOSamples[0][k::8])
 #			plt.plot(numpy.array(sorted(analogKeys))/1.e6, AOSamples[1][k::8])
-#		#plt.plot(numpy.array(sorted(digitalCommands.iterkeys()))/1.e6, (DIOSamples[3::6] & 1), 's')
+#		plt.plot(numpy.array(sorted(digitalCommands.iterkeys()))/1.e6, (DIOSamples[3::6] & 1), 's')
 #		plt.show()
-		
-#		import csv
-#		with open('analogCommands.csv', 'wb') as ifile:
-#			writer = csv.writer(ifile)
-#			writer.writerow(numpy.array(sorted(analogKeys))/1.e6)
-#			for k in range(0, 8):
-#				writer.writerow(AOSamples[0][k::8])
-#				writer.writerow(AOSamples[1][k::8])
-		
 		if errorEncountered:
 			logger.warn('#################################################')
 			logger.warn('error during Timeframe compilation! Check Timeframe!')
 			logger.warn('#################################################')
-		return (AOSamples, DIOSamples, cameraSettings)
+		return (AOSamples, DIOSamples, cameraSettings, agilentSettings, agilentSettings2, srsPulseSettings)
 
 	@staticmethod
 	def getRowType(row): 
@@ -376,7 +411,14 @@ class TimeframeCompiler:
 		if row[COL_EXTERNAL] == 'External':
 			if row[COL_DEVICE] == 'parameter':
 				return ROWTYPE_PARAMETER
-			return ROWTYPE_CAMERA # TODO: sloppy, we rely on there being only two options for external devices: parameter or camera
+			if row[COL_DEVICE] == 'camera':
+				return ROWTYPE_CAMERA
+			if row[COL_DEVICE] == 'agilent':
+				return ROWTYPE_AGILENT
+			if row[COL_DEVICE] == 'agilent2' :
+				return ROWTYPE_AGILENT2
+			if row[COL_DEVICE] == 'srspulse' :
+				return ROWTYPE_SRSPULSE
 		device = row[COL_DEVICE]
 		if device in settings['AnalogChannels']:
 			return ROWTYPE_ANALOG
