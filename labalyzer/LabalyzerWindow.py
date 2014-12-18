@@ -117,7 +117,6 @@ class LabalyzerWindow(Window):
 			self.builder.get_object(chkboxes[i-1]).set_active(i in settings['scope.channels'])
 			self.builder.get_object(chkboxes[i-1]).connect('toggled', self.on_chkScopeChannelSelect_toggled, i)
 
-		
 		# create combo box for selecting which fitting method is used
 		cmbFitMethod = builder.get_object('cmbFitMethod')
 		cell = gtk.CellRendererText()
@@ -360,12 +359,18 @@ class LabalyzerWindow(Window):
 		channel_conf["RD"] = self.builder.get_object('adjSRSRelativeDelay').get_value()
 		channel_conf["AB"] = self.builder.get_object('adjSRSABPulseLength').get_value()
 		channel_conf["CD"] = self.builder.get_object('adjSRSCDPulseLength').get_value()
-		
 		self.timeframeController.directControlSRSPulse(channel_conf, mode)
 
 	def on_btnSendPulse_clicked(self, _widget, _data=None):
 		"""docstring for on_btnSendPulse_clicked"""
 		self.timeframeController.sendSRSPulse()
+
+	def on_btnRohSchStartOutput_clicked(self, _widget, data=None):
+		file_name = self.builder.filechooserbutton1.get_filename()
+		if file_name is None:
+			pass
+		else:
+			self.timeframeController.startRohSchOutput(file_name)
 
 
 	def on_cmbImageSelector(self, widget, _data=None):

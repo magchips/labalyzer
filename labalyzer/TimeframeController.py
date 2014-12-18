@@ -42,6 +42,7 @@ from labcontrol.ScopeController import ScopeController
 from labcontrol.AgilentController import AgilentController
 from labcontrol.AgilentController2 import AgilentController2
 from labcontrol.SRSPulseController import SRSPulseController
+from labcontrol.RohSchController import RohSchController
 
 # settings
 from labalyzer.LabalyzerSettings import settings
@@ -106,6 +107,9 @@ class TimeframeController:
 		self.__agilent2.initialize()
 		self.__pulse = SRSPulseController('labalyzer')
 		self.__pulse.initialize()
+		self.__rohSch = RohSchController('labalyzer')
+		self.__rohSch.initialize()
+
 		try:
 			self.__scope = ScopeController()
 		except: # probably the scope is not connected
@@ -402,6 +406,9 @@ class TimeframeController:
 	def iniBurst2(self):
 		self.__agilent2.setBurstMode()
 
+	def startRohSchOutput(file_name):
+		self.__rohSch.stableOutput(file_name)
+
 	def startTimeframe(self):
 		'''start new timeframe'''
 		logger.debug("attempting to start timeframe")
@@ -413,6 +420,7 @@ class TimeframeController:
 		self.__agilent.startOutput(self.__data[3])
 		self.__agilent2.startOutput(self.__data[4])
 		self.__pulse.startOutput(self.__data[5])
+		self.__rohSch.startOutput(self.__data[6])
 		logger.debug('Agilent waveform generator initialized')
 		self.__nc.programmeChannels(self.__data[0])
 		self.__nc.startTask()
@@ -429,6 +437,8 @@ class TimeframeController:
 			if self.scanInfo == None:
 				pass
 			else:
+				# we have to save the timeframe now, rather than in acquireData, as
+				# there it will already be changed for the next run
 				self.scanParameters.timestamp = datetime.now().strftime('/%Y%m%d-%H%M%S-')
 				baseName = self.scanParameters.folder + self.scanParameters.timestamp
 				saveTimeframe(baseName + 'timeframe.csv', self.timeframe)

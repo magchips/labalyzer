@@ -99,6 +99,7 @@ class TimeframeCompiler:
 		agilentSettings = {"Freq" : 5000, "Amp" : 1, "PulseLength": 0} #goes into pulse mode if PulseLength isn't zero
 		agilentSettings2 = {"Freq" : 5000, "Amp" : 1, "PulseLength": 0}
 		srsPulseSettings = {"ABPulseLength": 200, "CDPulseLength": 200, "RelativeDelay": 200, "PulseLength":0} #values are in nm. RD can be negative
+		rohSchSettings = {"Freq" : 240000000, "Output" : 1.0}
 		errorEncountered = False
 
 		trigBoard = settings['DigitalChannels']['AnalogTrigger'].portNumber							# needed multiple times below
@@ -306,6 +307,16 @@ class TimeframeCompiler:
 					row[COL_COLORHINT] = '#FF0000'
 					errorEncountered = True
 
+			elif rowtype == ROWTYPE_ROHSCH:
+				item = row[COL_ROHSCHITEM]
+				if item in rohSchSettings:
+					rohSchSettings[item] = self.__evaluateCell__(row[COL_VALUE])
+					row[COL_ERROR] = 'RohSch information set'
+					row[COL_COLORHINT] = '#00FFFF'
+				else:
+					row[COL_ERROR] = 'No valid RohSch setting'
+					row[COL_COLORHINT] = '#FF0000'
+					errorEncountered = True
 			else:
 				row[COL_ERROR] = 'unknown device'
 				row[COL_COLORHINT] = '#FF0000'
@@ -398,7 +409,7 @@ class TimeframeCompiler:
 			logger.warn('#################################################')
 			logger.warn('error during Timeframe compilation! Check Timeframe!')
 			logger.warn('#################################################')
-		return (AOSamples, DIOSamples, cameraSettings, agilentSettings, agilentSettings2, srsPulseSettings)
+		return (AOSamples, DIOSamples, cameraSettings, agilentSettings, agilentSettings2, srsPulseSettings, rohSchSettings)
 
 	@staticmethod
 	def getRowType(row): 
@@ -419,6 +430,8 @@ class TimeframeCompiler:
 				return ROWTYPE_AGILENT2
 			if row[COL_DEVICE] == 'srspulse' :
 				return ROWTYPE_SRSPULSE
+			if row[COL_DEVICE] == 'rohsch' :
+				return ROWTYPE_ROHSCH
 		device = row[COL_DEVICE]
 		if device in settings['AnalogChannels']:
 			return ROWTYPE_ANALOG
