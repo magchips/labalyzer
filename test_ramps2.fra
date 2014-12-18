@@ -1,0 +1,7 @@
+TOF=0/insitu=1	External	parameter	20			v1				
+exposure time	External	parameter	2			v2				
+1 - no blue 	External	parameter	0			t1				
+	0	AOM	5	V	step					
+	0	Big coils	5	V	step					
+	\10	AOM	0	V	ramp100	10				
+	\0	Big coils	0	V	ramp100	20				

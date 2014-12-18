@@ -1,0 +1,364 @@
+TOF=0/insitu=1	External	parameter	1			f1
+exposure time	External	parameter	5			e1
+1 - no blue 	External	parameter	0			t1
+ 						
+probe detuning	External	parameter	5.1*f1+6.40*(1-f1)			d0
+probe intensity - max2.0, min1.0	External	parameter	1.1*f1+1.2*(1-f1)			d2
+ 						
+ hold time	External	parameter	2000			a1
+ 						
+exposure time	External	parameter	-0.2/0.9*d2+0.49/0.9			e0
+cam shutter offset	External	parameter	10			s0
+CCD readout time	External	parameter	150+500			d1
+ small coil offset	External	parameter	0			s1
+ 						
+ debug	\e0	MOT Shutter	shut	TTL		
+ 						
+first rf start	External	parameter	11000			r0
+first rf end	External	parameter	5400			r1
+second rf end	External	parameter	1200			r2
+second rf end	External	parameter	700			r3
+second rf end	External	parameter	630+70			r4
+ 						
+evap time 1	External	parameter	1500			t7
+evap time 1	External	parameter	2000			t8
+evap time 2	External	parameter	500			t9
+evap time 1	External	parameter	500			t6
+ 						
+evap power 1 	External	parameter	3.2			p1
+evap power 2 	External	parameter	1			p2
+ 						
+ 	External	ROI Y min	281			
+ 	External	ROI Y max	480			
+ 	External	ROI X min	1+411			
+ 	External	ROI X max	1+710			
+ 	External	Binning	1			
+ 	External	Exposure	0.2	ms		
+ 						
+init devices 	1	MOT Shutter	open	TTL		
+ 	0	Cam shutter	shut	TTL		
+ 	0	RF switch	output2	TTL		
+ 	0	FET switches	on	TTL		
+ 	0	UZ FET switch	on	TTL		
+ 	0	Probe AO mod	on	TTL		
+ 	0	Repump EOM	0	V	step	
+ 	0	MW trigger	5	V	step	
+ 	0	Camera trigger	low	TTL		
+	0	Repump Shutter	open	TTL		
+ 	0	Attenuate rf	0.128	V	step	
+ 	0	\rf0	0	kHz	reset	
+ 	200	\rf1	25000	kHz	step	
+ 	0	\rf1	25000	kHz	ramp	1
+ 	0	OptPump Shutter	shut	TTL		
+ 	0	Probe  shutter	shut	TTL		
+ 	0	EIT Shutter	low	TTL		
+ 	0	Rydberg AOM	d0	V	step	
+ 	0	probe AOM	d2	V	step	
+ 	0	Rb dispenser	off	TTL		
+ 	0	Opt pump AOM	8*0	V	step	
+init MOT 	0	Big coils	-0.05	A	step	
+ 	0	Small coil	0.04	A	step	
+ 	0	z-wire	0	A	step	
+ 	0	MOT coil	-12	A	step	
+ 	0	MC	10.7	A	step	
+ 	0	AOM	6.2	V	step	
+ 	0	EOM	2.8	V	step	
+load MOT 	100	Rb dispenser	on	TTL		
+ 	4.9*1000	Rb dispenser	off	TTL		
+UHV recovery 	3000	Rb dispenser	off	TTL		
+ 	0	MOS-FET/Relais	on	TTL		
+ 	0	MOS-FET/Relais	on	TTL		
+ 	0	Opt pump AOM	8*0	V	step	
+ 						
+ 	External	parameter	100			t0
+params 	External	parameter	-0.48			x0
+ 	External	parameter	4.5			y0
+ 	External	parameter	2			z0
+ 	External	parameter	7.4			u0
+ 						
+CMOT transfer 	2000	Big coils	0.0637*y0-0.0637*z0	A	ramp100	t0
+ 	0	MOT coil	0.0744*y0+0.0744*z0	A	ramp100	t0
+ 	0	MC	0.0744*y0+0.0744*z0	A	ramp100	t0
+ 	0	Small coil	-0.08333*x0+s1	A	ramp100	t0
+ 	0	u-wire	u0	A	ramp100	t0
+ 	0	Repump EOM	0	V	ramp100	t0
+ 	0	AOM	6	V	ramp100	t0
+ 	0	EOM	2.8	V	ramp100	t0
+ 						
+params 	External	parameter	-0.52			x1
+ 	External	parameter	1.3			y1
+ 	External	parameter	-0.02			z1
+ 	External	parameter	0.2175			u1
+ 	External	parameter	5			g1
+ 	External	parameter	1.4			g2
+ 						
+ 						
+ 	0	Rb dispenser	off	TTL		
+polgrad stage	t0+5	EOM	0	V	step	
+ 	0	Opt pump AOM	0	V	step	
+ 	0	AOM	0	V	step	
+ 	0	Big coils	0.0637*y1-0.0637*z1	A	step	
+ 	0	MOT coil	0.0744*y1+0.0744*z1	A	step	
+ 	0	MC	0.0744*y1+0.0744*z1	A	step	
+ 	0	Small coil	-0.08333*x1+s1	A	step	
+ 	0	u-wire	u0*u1	A	step	
+ 	0.7	EOM	2.8	V	step	
+ 	0	AOM	5.5	V	step	
+ 	0	AOM	2.2	V	ramp	g1
+ 	g1	AOM	2.2	V	step	
+ 	-g2	MOT Shutter	shut	TTL		
+ 	0	Repump Shutter	open	TTL		
+ 						
+opt pumping 	g2	Opt pump AOM	0	V	step	
+ 	0	AOM	0	V	step	
+ 	0	EOM	0	V	step	
+ 	0	Big coils	0	A	step	
+ 	0	MOT coil	0	A	step	
+ 	0	MC	0	A	step	
+ 	0	FET switches	off	TTL		
+ 						
+ 	0	u-wire	0	A	step	
+ 	0	Small coil	1+s1	A	ramp	0.2
+ 	0.35	EOM	1	V	step	
+ 	0	Repump EOM	0	V	step	
+ 	0	Opt pump AOM	8	V	step	
+ 	0	AOM	6	V	step	
+ pumping duration	0.2	Opt pump AOM	0	V	step	
+ 	0	Repump EOM	4	V	step	
+ 	0	AOM	0	V	step	
+ 	0	EOM	2.8	V	step	
+ 	0	FET switches	on	TTL		
+ 						
+ 	0	OptPump Shutter	shut	TTL		
+ 	0	Repump Shutter	shut	TTL		
+ 	0	MOT Shutter	shut	TTL		
+was 8 	5	Opt pump AOM	8*0	V	step	
+ 	0	AOM	6	V	step	
+ 	0	EOM	0	V	step	
+ 	0	Repump EOM	4	V	step	
+ 						
+ 						
+params 	External	parameter	-6.0			x2
+ 	External	parameter	14.5			y2
+ 	External	parameter	0			z2
+ 	External	parameter	15			w1
+ 						
+initial MT	-5	Big coils	0.0637*y2-0.0637*z2	A	step	
+ 	0	MOT coil	0.0744*y2+0.0744*z2	A	step	
+ 	0	MC	0.0744*y2+0.0744*z2	A	step	
+ 	0	Small coil	-0.08333*x2+s1	A	ramp	1
+ 	0.6	z-wire	w1	A	step	
+ 	20	z-wire	w1	A	step	
+ 	\0	EOM	2.8	V	step	
+ 	\0	Repump EOM	0	V	step	
+ 						
+params 	External	parameter	-5.7+0.3			x3
+params was 35	External	parameter	37			y3
+params 	External	parameter	0			z3
+params 	External	parameter	15			w2
+params 	External	parameter	150			t3
+ 						
+compressed MT stage1	0.5	Small coil	-0.08333*x3+s1	A	ramp100	t3*2/3
+	0	Big coils	0.0637*y3-0.0637*z3	A	ramp100	t3
+ 	0	MOT coil	0.0744*y3+0.0744*z3	A	ramp100	t3
+ 	0	MC	0.0744*y3+0.0744*z3	A	ramp100	t3
+ 	1	z-wire	w2	A	ramp100	t3
+hold for 50 ms	t3+5	MOT Shutter	shut	TTL		
+ 						
+begin evap 1 	0	Attenuate rf	p1	V	ramp	5
+ 	0	RF switch	output1	TTL		
+ 	0	\rf1	r0	kHz	step	
+ 	7	\rf1	r1	kHz	ramp	t7
+ 	t7	Attenuate rf	0	V	ramp	5
+ 	5	RF switch	output2	TTL		
+ 						
+params 	External	parameter	-4.40			x4
+params 	External	parameter	48			y4
+params 	External	parameter	0			z4
+params 	External	parameter	15			w3
+params 	External	parameter	120			t4
+ 						
+ 						
+compressed MT stage2	0.5	Small coil	-0.08333*x4+s1	A	ramp100	t4*2/3
+	0	Big coils	0.0637*y4-0.0637*z4	A	ramp100	t4
+ 	0	MOT coil	0.0744*y4+0.0744*z4	A	ramp100	t4
+ 	0	MC	0.0744*y4+0.0744*z4	A	ramp100	t4
+ 	1	z-wire	w3	A	ramp100	t4
+hold for 50 ms	t4	MOT Shutter	shut	TTL		
+ 						
+ 	5	\rf1	r1+1000	kHz	step	
+ 	0	Attenuate rf	p1	V	ramp	10
+ 	10	RF switch	output1	TTL		
+ 	0	\rf1	r2	kHz	ramp	t8
+begin evap 2	0	Attenuate rf	p2	V	ramp100	t8
+ 	t8	RF switch	output1	TTL		
+ 	0	\rf1	r3	kHz	ramp	t9
+begin evap 2	t9+100	Attenuate rf	0.128	V	ramp	5
+ 	5	RF switch	output2	TTL		
+begin evap 2	0	Attenuate rf	0.128	V	step	
+ 						
+params 	External	parameter	-4.40+0.35			x5
+params 	External	parameter	51.7			y5
+params 	External	parameter	-0.15			z5
+params 	External	parameter	15			w4
+params 	External	parameter	120			t5
+ 						
+compressed MT stage3	0.5	Small coil	-0.08333*x5+s1	A	ramp100	t4*2/3
+	0	Big coils	0.0637*y5-0.0637*z5	A	ramp100	t5
+ 	0	MOT coil	0.0744*y5+0.0744*z5	A	ramp100	t5
+ 	0	MC	0.0744*y5+0.0744*z5	A	ramp100	t5
+ 	1	z-wire	w4	A	ramp100	t5
+ 	t5+10	MOT Shutter	shut	TTL		
+ 						
+ 	5	\rf1	r3+300	kHz	step	
+ 	0	Attenuate rf	p2	V	ramp	10
+ 	10	RF switch	output1	TTL		
+ 	0	\rf1	r4	kHz	ramp	t6
+begin evap 2	t6	Attenuate rf	p2	V	step	
+begin evap 2	\5	Attenuate rf	0.128	V	ramp	5
+ 	\5	RF switch	output2	TTL		
+	\0	Attenuate rf	0.128	V	step	
+ 	5	RF switch	output2	TTL		
+	0	Attenuate rf	0.128	V	step	
+ 						
+hold time	a1	Attenuate rf	0.128	V	step	
+ 						
+	0+1000*f1	Big coils	0.0637*y4-0.0637*z4	A	ramp	15
+ 	0	MOT coil	0.0744*y4+0.0744*z4	A	ramp	15
+ 	0	MC	0.0744*y4+0.0744*z4	A	ramp	15
+ 	20-1020*f1	MOT Shutter	shut	TTL		
+ 						
+params 	External	parameter	0			x9
+params 	External	parameter	0			y9
+params 	External	parameter	0			z9
+ 						
+ 	0	z-wire	0	A	step	
+release field 	0	Big coils	0.0637*y9-0.0637*z9	A	step	
+ 	0	MOT coil	0.0744*y9+0.0744*z9	A	step	
+ 	0	MC	0.0744*y9+0.0744*z9	A	step	
+ 	0	Small coil	0	A	step	
+ 	0.15+f1*1000	FET switches	on	TTL		
+release field 	-f1*1000	MOT Shutter	shut	TTL		
+ 						
+params 	External	parameter	-2*f1+(e1-0.15)*(1-f1)			h1
+ 						
+ 	h1-s0	Cam shutter	shut	TTL		
+ 	100*t1	EIT Shutter	high	TTL		
+abs image 	-3+s0-100*t1	Rydberg AOM	-5	V	step	
+ 	0	Probe AO mod	off	TTL		
+ 0	0	probe AOM	0	V	step	
+ 	0	Probe  shutter	open	TTL		
+ 	0	Repump Shutter	shut	TTL		
+ 	0	Repump EOM	4.1	V	step	
+ 	2.7	Camera trigger	high	TTL		
+ 	0.3	Rydberg AOM	d0	V	step	
+ 	0	probe AOM	d2	V	step	
+ 	0	Probe AO mod	on	TTL		
+ 	0	Repump EOM	0	V	step	
+ 	e0	Rydberg AOM	-5	V	step	
+ 0	0	probe AOM	0	V	step	
+ 	0	Cam shutter	shut	TTL		
+ 	0	Probe AO mod	off	TTL		
+ 	0	Repump EOM	4.1	V	step	
+ 	0	EIT Shutter	low	TTL		
+ 	10	Probe  shutter	shut	TTL		
+ 	5	Rydberg AOM	d0	V	step	
+ 	0	probe AOM	d2	V	step	
+ 	0	Probe AO mod	on	TTL		
+ 	0	Repump Shutter	shut	TTL		
+ 	0	Camera trigger	low	TTL		
+ 						
+repeat for imaging	0	FET switches	off	TTL		
+ 	0.5	Small coil	-0.08333*x5+s1	A	step	
+ 	0	Big coils	0.0637*y5-0.0637*z5	A	step	
+ 	0	MOT coil	0.0744*y5+0.0744*z5	A	step	
+ 	0	MC	0.0744*y5+0.0744*z5	A	step	
+ 	1	z-wire	w4	A	step	
+ 	d1	z-wire	w4	A	step	
+ 						
+ 	0	z-wire	0	A	step	
+release field 	0	Big coils	0	A	step	
+ 	0	MOT coil	0	A	step	
+ 	0	MC	0	A	step	
+ 	0	Small coil	0	A	step	
+ 	0.15+f1*1000	FET switches	on	TTL		
+release field 	-f1*1000	Big coils	0	A	step	
+ 						
+ 	h1-s0	Cam shutter	shut	TTL		
+light image 	-3+s0	Rydberg AOM	-5	V	step	
+ 	0	Probe AO mod	off	TTL		
+ 0	0	probe AOM	d2*0	V	step	
+ 	0	Probe  shutter	open	TTL		
+ 	0	Repump Shutter	shut	TTL		
+ 	0	Repump EOM	4.1	V	step	
+ 	2.7	Camera trigger	high	TTL		
+ 	0.3	Rydberg AOM	d0	V	step	
+ 	0	probe AOM	d2	V	step	
+ 	0	Probe AO mod	on	TTL		
+ 	0	Repump EOM	0	V	step	
+ 	e0	Rydberg AOM	-5	V	step	
+0 	0	probe AOM	d2*0	V	step	
+ 	0	Cam shutter	shut	TTL		
+ 	0	Probe AO mod	off	TTL		
+ 	0	Repump EOM	4.1	V	step	
+ 	10	Probe  shutter	shut	TTL		
+ 	5	Rydberg AOM	d0	V	step	
+ 	0	probe AOM	d2	V	step	
+ 	0	Probe AO mod	on	TTL		
+ 	0	Repump Shutter	shut	TTL		
+ 	0	Camera trigger	low	TTL		
+ 						
+ 	d1	u-wire	0	A	step	
+ 	0	z-wire	0	A	step	
+	0	FET switches	on	TTL		
+ 						
+ 	h1-s0	Cam shutter	shut	TTL		
+dark image 	-3+s0	Rydberg AOM	-5	V	step	
+ 	0	Probe AO mod	off	TTL		
+ 0	0	probe AOM	d2	V	step	
+ 	0	Probe  shutter	open	TTL		
+ 	0	Repump Shutter	shut	TTL		
+ 	0	Repump EOM	4.6	V	step	
+ 	2.7	Camera trigger	high	TTL		
+ 	0.3	Rydberg AOM	d0*0-5	V	step	
+ 0	0	probe AOM	d2	V	step	
+ 	0	Probe AO mod	off	TTL		
+ 	0	Repump EOM	0	V	step	
+ 	e0	Rydberg AOM	-5	V	step	
+ 0	0	probe AOM	d2	V	step	
+ 	0	Cam shutter	shut	TTL		
+ 	0	Probe AO mod	off	TTL		
+ 	0	Repump EOM	4.1	V	step	
+ 	20	Probe  shutter	shut	TTL		
+ 	5	Rydberg AOM	d0	V	step	
+ 	0	probe AOM	d2	V	step	
+ 	0	Probe AO mod	on	TTL		
+ 	0	Repump Shutter	shut	TTL		
+ 	0	Camera trigger	low	TTL		
+ 						
+reinit 	10	AOM	6	V	step	
+ 	0	EOM	2.8	V	step	
+ 	0	Opt pump AOM	8*0	V	step	
+ 	0	Repump EOM	0	V	step	
+ 	0	Repump Shutter	shut	TTL		
+ 	0	MOT Shutter	shut	TTL		
+ 	0	OptPump Shutter	shut	TTL		
+ 	0	Big coils	0	A	step	
+ 	0	MOT coil	0	A	step	
+ 	0	MC	0	A	step	
+ 	0	Small coil	0	A	step	
+ 	0	u-wire	0	A	step	
+ 	0	EOM	2.8	V	step	
+ 						
+cycle delay 	0	MOT Shutter	shut	TTL		
+	2000	Rb dispenser	off	TTL		
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						

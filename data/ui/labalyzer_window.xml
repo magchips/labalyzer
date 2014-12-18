@@ -1,0 +1,8 @@
+<glade-catalog name="labalyzer_window" domain="glade-3" 
+               depends="gtk+" version="1.0">
+  <glade-widget-classes>
+    <glade-widget-class title="Labalyzer Window" name="LabalyzerWindow" 
+                        generic-name="LabalyzerWindow" parent="GtkWindow"
+                        icon-name="widget-gtk-window"/>
+  </glade-widget-classes>
+</glade-catalog>

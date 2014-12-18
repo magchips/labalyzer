@@ -1,0 +1,8 @@
+	0	AOM	0	V	step	
+	0	rf0			reset	
+	200	rf0	10000	kHz	step	
+	1000	rf1	20000	kHz	ramp	4000
+	5000	rf1	30000	kHz	step	
+	1000	rf0	10000	kHz	ramp	5000
+	10000	rf0	2000	kHz	ramp	1000
+	2000	AOM	0	V	step	
