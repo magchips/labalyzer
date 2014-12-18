@@ -140,6 +140,8 @@ class TimeframeController:
 			today = datetime.now().strftime('%Y-%m-%d %a')
 			if not os.path.exists(today):
 				os.mkdir(today)
+			if not os.path.exists(os.path.join(today, 'continuous')):
+				os.mkdir(os.path.join(today, 'continuous'))
 			os.chdir(today)
 		except OSError: 
 			logger.error("Could not create data directory")
@@ -522,7 +524,7 @@ class TimeframeController:
 			try:
 				baseName = self.scanParameters.folder + self.scanParameters.timestamp
 			except TypeError: # thrown if main.saveAll = True and MODE_SCAN = False, as scanParameter values are then None
-				baseName = './' + datetime.now().strftime('/%Y%m%d-%H%M%S-')
+				baseName = './continuous/' + datetime.now().strftime('/%Y%m%d-%H%M%S-')
 			savePGM(baseName + 'absorption.pgm', absorption)
 			savePGM(baseName + 'light.pgm', light)
 			savePGM(baseName + 'dark.pgm', dark)

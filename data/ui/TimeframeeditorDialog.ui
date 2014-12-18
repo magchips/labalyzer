@@ -130,6 +130,7 @@
             </child>
             <child>
               <object class="GtkVBox" id="vbox2">
+                <property name="width_request">100</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="spacing">10</property>
@@ -184,6 +185,7 @@
             </child>
             <child>
               <object class="GtkScrolledWindow" id="scrolledwindow2">
+                <property name="width_request">100</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="hscrollbar_policy">automatic</property>
@@ -205,12 +207,14 @@
             </child>
             <child>
               <object class="GtkScrolledWindow" id="scrolledwindow1">
+                <property name="width_request">1000</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="hscrollbar_policy">automatic</property>
                 <property name="vscrollbar_policy">automatic</property>
                 <child>
                   <object class="GtkTreeView" id="twTimeframe">
+                    <property name="height_request">600</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="model">lsTimeframe</property>
@@ -294,9 +298,8 @@
                     </child>
                   </object>
                   <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="padding">5</property>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -304,7 +307,7 @@
                   <object class="GtkHButtonBox" id="hbuttonbox2">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="layout_style">center</property>
+                    <property name="layout_style">end</property>
                     <child>
                       <object class="GtkButton" id="btnInsertLine">
                         <property name="label" translatable="yes">Insert Line</property>
@@ -371,19 +374,17 @@
                     </child>
                   </object>
                   <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="padding">5</property>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="padding">1</property>
                     <property name="position">1</property>
                   </packing>
-                </child>
-                <child>
-                  <placeholder/>
                 </child>
               </object>
               <packing>
                 <property name="top_attach">1</property>
                 <property name="bottom_attach">2</property>
+                <property name="y_options">GTK_FILL</property>
               </packing>
             </child>
           </object>
