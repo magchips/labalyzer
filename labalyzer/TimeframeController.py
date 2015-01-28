@@ -514,7 +514,7 @@ class TimeframeController:
 	
 		self.ui.plotter.setImages((dark, light, absorption, od))
 		
-		print 'current temperature:', self.__andor.getTemperature()
+		logger.info('camera temperature is: ' + str(self.__andor.getTemperature()))
 
 		if settings['main.runFit']:# or self.mode == MODE_SCAN: 
 			fitResult = self.ui.plotter.getImageInfo()
