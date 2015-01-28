@@ -320,7 +320,6 @@ class TimeframeCompiler:
 					errorEncountered = True
 
 			elif rowtype == ROWTYPE_PWS:
-				print "Voltage Source"
 				item = row[COL_PWSITEM]
 				if item in PWSSettings:
 					PWSSettings[item] = self.__evaluateCell__(row[COL_VALUE])
