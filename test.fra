@@ -1,3 +1,8 @@
 	0	Probe AOM Switch	off	TTL		
 	2000	Probe AOM Switch	off	TTL		
-
+	0	EOM	3.1	V	step	
+	0	AOM	6.6	V	step	
+	0	AOM	4.3	V	ramp100	0.5
+	-1.4	MOT Shutter	shut	TTL		
+	1.6	EOM	0	V	step	
+	3000	Repump EOM	0	V	step	
