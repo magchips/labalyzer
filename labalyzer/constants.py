@@ -26,6 +26,7 @@ COL_CAMVALUE = 3
 COL_AGILENTITEM = 4
 COL_SRSPULSEITEM = 4
 COL_ROHSCHITEM = 4
+COL_PWSITEM = 4
 COL_VALUE = 3
 COL_UNIT = 4
 COL_RAMPTYPE = 5
@@ -50,6 +51,7 @@ ROWTYPE_AGILENT = 8
 ROWTYPE_AGILENT2 = 9
 ROWTYPE_SRSPULSE = 10
 ROWTYPE_ROHSCH = 11
+ROWTYPE_PWS = 12
 
 TF_COLNAMES = {0: 'Comment', 1: 'Time', 2: 'Device', 3: 'Value', 4: 'Unit', 5: 'Function', 6: 'Variable', 7: 'Abs. Time', 8: 'Error Code', 9: '', 10: ''}
 

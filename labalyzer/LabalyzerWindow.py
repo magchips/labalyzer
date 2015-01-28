@@ -372,6 +372,10 @@ class LabalyzerWindow(Window):
 		else:
 			self.timeframeController.startRohSchOutput(file_name)
 
+	def on_btnVoltageUpdate_clicked(self, _widget, _data=None):
+		voltage = self.builder.get_object('adjVoltage').get_value()
+		self.timeframeController.startVoltageOutput(voltage)
+
 
 	def on_cmbImageSelector(self, widget, _data=None):
 		'''shown image changed'''

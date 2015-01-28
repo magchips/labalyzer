@@ -43,6 +43,7 @@ from labcontrol.AgilentController import AgilentController
 from labcontrol.AgilentController2 import AgilentController2
 from labcontrol.SRSPulseController import SRSPulseController
 from labcontrol.RohSchController import RohSchController
+from labcontrol.PWS4721Controller import PWS4721Controller
 
 # settings
 from labalyzer.LabalyzerSettings import settings
@@ -109,6 +110,8 @@ class TimeframeController:
 		self.__pulse.initialize()
 		self.__rohSch = RohSchController('labalyzer')
 		self.__rohSch.initialize()
+		self.__PWS4721 = PWS4721Controller()
+		self.__PWS4721.initialize()
 
 		try:
 			self.__scope = ScopeController()
@@ -411,6 +414,10 @@ class TimeframeController:
 	def startRohSchOutput(file_name):
 		self.__rohSch.stableOutput(file_name)
 
+	def startVoltageOutput(self,voltage):
+		self.__PWS4721.setVoltage(voltage)
+		logger.info("sending " + str(voltage)+ " Volt to PWS4721")
+
 	def startTimeframe(self):
 		'''start new timeframe'''
 		logger.debug("attempting to start timeframe")
@@ -421,9 +428,13 @@ class TimeframeController:
 			return False
 		self.__agilent.startOutput(self.__data[3])
 		self.__agilent2.startOutput(self.__data[4])
-		self.__pulse.startOutput(self.__data[5])
-		self.__rohSch.startOutput(self.__data[6])
 		logger.debug('Agilent waveform generator initialized')
+		self.__pulse.startOutput(self.__data[5])
+		logger.debug('Pulse generator initialized')
+		self.__rohSch.startOutput(self.__data[6])
+		logger.debug('Rohde Schwarz generator initialized')
+		self.__PWS4721.startOutput(self.__data[7])
+		logger.debug('Voltage supply initialized')
 		self.__nc.programmeChannels(self.__data[0])
 		self.__nc.startTask()
 		self.__vpc.programmeChannels(self.__data[1])
@@ -494,8 +505,8 @@ class TimeframeController:
 		absorption = self.__andor.getImage()
 		light = self.__andor.getImage()
 		dark = self.__andor.getImage()
-		upper = 1.*(absorption)
-		lower = 1.*(light)
+		upper = 1.*(absorption - dark)
+		lower = 1.*(light - dark)
 		prod = upper*lower
 		upper = numpy.where(prod > 0, upper, 1)
 		lower = numpy.where(prod > 0, lower, 1)				
@@ -503,6 +514,8 @@ class TimeframeController:
 	
 		self.ui.plotter.setImages((dark, light, absorption, od))
 		
+		print 'current temperature:', self.__andor.getTemperature()
+
 		if settings['main.runFit']:# or self.mode == MODE_SCAN: 
 			fitResult = self.ui.plotter.getImageInfo()
 			self.ui.setFitResults(*fitResult)
@@ -521,6 +534,7 @@ class TimeframeController:
 			self.ui.dlgDataLog.addDataPoint(0, self.cycleCount, fitResult)
 		
 		if self.mode == MODE_SCAN or settings['main.saveAll']:
+			print 'saving data!'
 			try:
 				baseName = self.scanParameters.folder + self.scanParameters.timestamp
 			except TypeError: # thrown if main.saveAll = True and MODE_SCAN = False, as scanParameter values are then None
