@@ -99,7 +99,7 @@ class TimeframeCompiler:
 		agilentSettings = {"Freq" : 5000, "Amp" : 1, "PulseLength": 0} #goes into pulse mode if PulseLength isn't zero
 		agilentSettings2 = {"Freq" : 5000, "Amp" : 1, "PulseLength": 0}
 		srsPulseSettings = {"ABPulseLength": 200, "CDPulseLength": 200, "RelativeDelay": 200, "PulseLength":0} #values are in nm. RD can be negative
-		rohSchSettings = {"Freq" : 300000000, "Output" : 1.0}
+		rohSchSettings = {"Freq" : 300000000, "Power" : 0, "Mode": True}
 		PWSSettings={"Voltage" : 0}
 		errorEncountered = False
 
