@@ -60,6 +60,7 @@ MODE_STOPPED = 3
 MODE_RUN = 4
 MODE_SCAN = 5
 MODE_CONTINUOUS = 6
+MODE_EXTERNAL = 7
 
 TRIGGER_LENGTH = 5 # 5 mus trigger length for triggering the NI6713 from the DIO64
 

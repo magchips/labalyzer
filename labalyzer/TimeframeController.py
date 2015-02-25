@@ -1,16 +1,16 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: tab; tab-width: 2 -*-
 ### BEGIN LICENSE
 # Copyright (C) 2010 <Atreju Tauschinsky> <Atreju.Tauschinsky@gmx.de>
-# This program is free software: you can redistribute it and/or modify it 
-# under the terms of the GNU General Public License version 3, as published 
+# This program is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License version 3, as published
 # by the Free Software Foundation.
-# 
-# This program is distributed in the hope that it will be useful, but 
-# WITHOUT ANY WARRANTY; without even the implied warranties of 
-# MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR 
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranties of
+# MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR
 # PURPOSE.  See the GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License along 
+#
+# You should have received a copy of the GNU General Public License along
 # with this program.  If not, see <http://www.gnu.org/licenses/>.
 ### END LICENSE
 
@@ -22,13 +22,13 @@ import logging
 logger = logging.getLogger('labalyzer')
 import csv
 import time
-from constants import (MODE_CONTINUOUS, MODE_DIRECT, MODE_RUN, MODE_SCAN, MODE_STOPPED, DDSCMD_RESET, DDSCMD_FIXED)
+from constants import (MODE_CONTINUOUS, MODE_DIRECT, MODE_RUN, MODE_SCAN, MODE_STOPPED, MODE_EXTERNAL, DDSCMD_RESET, DDSCMD_FIXED)
 
  # for timer
 import gobject
 
 # for image mangling
-import numpy 
+import numpy
 
 import os # for saving data
 from datetime import datetime # creating data dir
@@ -56,7 +56,7 @@ except ImportError:
 	logger.warn("psyco not available: Timeframe compilation might be slower than expected")
 
 
-class ScanParameters: 
+class ScanParameters:
 	'''used to store and pass parameters for a Scan'''
 	def __init__(self):
 		tmp = {'colname': 'Scan', 'rowname': 'Scan', 'start': 0, 'end': 0, 'steps': 0, 'row': None, 'column': None, 'original': ''}
@@ -84,16 +84,16 @@ class TimeframeController:
 		self.mode = MODE_STOPPED
 		self.modeNext = MODE_STOPPED
 		self.ui = ui
-		
+
 		self.ui.dlgDataLog.addScan(0, 'global', ['fitX', 'fitY', 'roi'], None)
 		self.ui.dlgDataLog.setActiveScan(0)
-		
+
 		self.scanParameters = ScanParameters()
 		self.scanInfo = None
 		self.nextScanInfo = None
-		
+
 		self.cycleCount = 0
-		
+
 		# create hardware interfaces
 		self.__nc = NIDAQOutputController()
 		self.__nc.initialize()
@@ -120,37 +120,40 @@ class TimeframeController:
 			settings['scope.use'] = False
 		if settings['scope.use']:
 			self.__scope.initialize()
-		
+
 		# to regularly check timeframe progress
 		# this needs to be polled, no notification possible
 		# also needed to check camera for new pictures
-		self.timer_id = gobject.timeout_add(100, self.clock_tick) 
-		
+		self.timer_id = gobject.timeout_add(100, self.clock_tick)
+
 		# for direct control we need to save current state of all outputs
 		self.directDigitalState = [0, 0, 0, 0]
 		self.directAnalogState = [numpy.zeros((8, ), dtype=numpy.float64 ), numpy.zeros((8, ), dtype=numpy.float64 )]
-		
+
 		# set the proper default directory for data:
-		try: 
+		try:
 			os.chdir("E:\Data")
 		except OSError:
 			try:
 				os.chdir("/tmp/")
-			except OSError: 
+			except OSError:
 				logger.error("Could not set data directory")
-		
+
 		try:
 			today = datetime.now().strftime('%Y-%m-%d %a')
 			if not os.path.exists(today):
 				os.mkdir(today)
 			if not os.path.exists(os.path.join(today, 'continuous')):
 				os.mkdir(os.path.join(today, 'continuous'))
+
+			if not os.path.exists(os.path.join(today, 'External')):
+				os.mkdir(os.path.join(today, 'External'))
 			os.chdir(today)
-		except OSError: 
+		except OSError:
 			logger.error("Could not create data directory")
 		self.datadir = os.getcwd()
-		
-		
+
+
 	def setFilename(self, filename):
 		'''set filename of current timeframe'''
 		filename = openTimeframe(filename, self.timeframe)
@@ -162,8 +165,8 @@ class TimeframeController:
 			return filename
 		else:
 			logger.error('problem loading Timeframe (or cancelled)')
-		
-		
+
+
 	def prepareTimeframe(self):
 		'''prepare next timeframe for execution (potentially while current one is still running'''
 		if self.modeNext == MODE_SCAN:
@@ -178,7 +181,7 @@ class TimeframeController:
 				self.timeframeIsCompiled = False
 				run = self.scanParameters.run - self.scanParameters.dummies - 1
 				if run >= self.scanParameters.totalRuns:
-					# reset to original values. 
+					# reset to original values.
 					# also reset mode to regular.
 					for i in range(self.scanParameters.depth):
 						self.timeframe[self.scanParameters.data[i]['row']][self.scanParameters.data[i]['column']] = self.scanParameters.data[i]['original']
@@ -194,13 +197,24 @@ class TimeframeController:
 						roundcount[1] = (run//self.scanParameters.data[0]['steps']) % self.scanParameters.data[1]['steps']
 					if self.scanParameters.depth > 2:
 						roundcount[2] = (run//self.scanParameters.data[0]['steps']//self.scanParameters.data[1]['steps']) % self.scanParameters.data[2]['steps']
-					
+
 					for i in range(self.scanParameters.depth):
 						newpar = self.scanParameters.data[i]['start'] + self.scanParameters.data[i]['stepsize']*roundcount[i]
 						self.timeframe[self.scanParameters.data[i]['row']][self.scanParameters.data[i]['column']] = newpar
 						self.scanParameters.data[i]['info'] = [self.scanParameters.data[i]['rowname'], str(newpar), str(int(roundcount[i])+1) + '/' + str(int(self.scanParameters.data[i]['steps']))]
 					self.nextScanInfo = [self.scanParameters.data[i]['info'] for i in range(self.scanParameters.depth)]
 					logger.debug('setting next scan info for SCAN')
+
+		if self.modeNext == MODE_EXTERNAL:
+                        logger.debug('loading timeframe for remote control. recompile this timeframe')
+                        #enforce that timeframe-file is loaded again; this should cover any external changes made to the timeframe
+                        if self.filename is not None: #check first if timeframe has been loaded before
+                                openTimeframe(self.filename, self.timeframe) #overwrite the current timeframe
+                                self.timeframeIsCompiled = False #forces recompilation
+                                self.timeframeIsLoaded = True
+                        else:
+                                logger.error('no timeframe for remote control. cannot update any external changes')
+
 
 		# now we actually have to compile the timeframe. but only if it isn't compiled yet.
 		if self.timeframeIsLoaded:
@@ -213,8 +227,8 @@ class TimeframeController:
 			self.__data = self.compiler.compileTimeframe(self.timeframe)
 			self.timeframeIsCompiled = True
 			return True
-		
-	
+
+
 	def attemptStateChange(self, new_state):
 		'''control logic to go from one state to another.
 		returns FALSE if state change failed for some reason'''
@@ -249,7 +263,7 @@ class TimeframeController:
 				self.modeNext = MODE_STOPPED
 			logger.debug('state change completed')
 		elif new_state == MODE_RUN:
-			logger.debug('state change to RUN')		
+			logger.debug('state change to RUN')
 			if not self.mode == MODE_STOPPED:
 				return False # only start a single run if we are stopped, every other case takes precedence
 			recompile = True
@@ -285,9 +299,23 @@ class TimeframeController:
 					startNew = True
 				self.modeNext = MODE_SCAN
 				logger.debug('state change completed')
-		
+
+		elif new_state == MODE_EXTERNAL:
+                        logger.debug('state change to EXTERNAL')
+                        if self.mode == MODE_SCAN and not self.modeNext == MODE_STOPPED: # Scan takes precedence!
+                                logger.debug('tried to change from SCAN to EXTERNAL which is not allowed')
+                                return False
+                        if self.mode == MODE_EXTERNAL:
+                                logger.debug('state change from EXTERNAL to STOPPED')
+                                self.modeNext = MODE_STOPPED
+                        else:
+                                recompile = True # always enforce recompilation in external mode; main difference compared to CONTINUOUS mode here
+                                startNew = True
+                                self.modeNext = MODE_EXTERNAL
+                        logger.debug('state change completed')
+
 		if recompile:
-			logger.debug('recompilation requested') 
+			logger.debug('recompilation requested')
 			if not self.prepareTimeframe():
 				logger.error('could not compile timeframe!')
 				return False
@@ -296,7 +324,7 @@ class TimeframeController:
 			self.startTimeframe()
 		self.ui.updateModeInfo(self.mode, self.modeNext)
 		return True
-		
+
 	def prepareScan(self):
 		'''prepare scan info for scan'''
 		if self.scanParameters.depth < 1:
@@ -313,9 +341,9 @@ class TimeframeController:
 			self.scanParameters.totalRuns *= self.scanParameters.data[i]['steps']
 			scanPoints.extend([self.scanParameters.data[i]['start'] + self.scanParameters.data[i]['stepsize']*j for j in range(int(self.scanParameters.data[i]['steps']))]) # probably doesn't work for >1D scans
 		# prepare scan things
-		
+
 		self.scanParameters.scanID = self.ui.dlgDataLog.getNewScanID()
-		
+
 		timestamp = time.strftime('%H%M%S')
 		self.scanParameters.firstTimestamp = timestamp
 		self.ui.dlgDataLog.addScan(self.scanParameters.scanID, timestamp + '-' + self.scanParameters.name, ['fit x', 'fit y', 'roi'], scanPoints)
@@ -341,7 +369,7 @@ class TimeframeController:
 		else:
 			self.directDigitalState[port] &= channel.invertedBitmask
 		self.__vpc.directOutput(self.directDigitalState[port], port)
-	
+
 	def directControlChangeAnalog(self, channel, value):
 		'''send new values to NIDAQ cards, if in direct control mode'''
 		if not self.mode == MODE_DIRECT:
@@ -349,7 +377,7 @@ class TimeframeController:
 		self.directAnalogState[channel.boardNumber][channel.channelNumber] = value*channel.scalefactor
 		# the gtk.Adjustments are set to only allow the correct maximum/minimu values, so we don't have to worry about that here.
 		self.__nc.directOutput(self.directAnalogState)
-		
+
 	def directControlChangeDDS(self, frequency, enable):
 		'''send new valued to DDS (via viewpoint card) if in direct control mode'''
 		def executeDDSCommand(cmd):
@@ -357,15 +385,15 @@ class TimeframeController:
 			logger.info("executing " + str(len(cmd)) + " DDS commands")
 			for c in cmd:
 				self.__vpc.directOutput(c, 1)
-				
+
 		if not self.mode == MODE_DIRECT:
 			return
-			
+
 		cmd = TimeframeCompiler.translateDDSCommand(DDSCMD_RESET, channel=0, enableChannel=enable)
 		executeDDSCommand(cmd)
 		cmd = TimeframeCompiler.translateDDSCommand(DDSCMD_FIXED, frequency = int(frequency*1000)) # from kHz to Hz
 		executeDDSCommand(cmd)
-	
+
 	def directControlAgilent(self, frequency,amplitude,enable):
 		'''send new value to Agilent Function Generator'''
 		if enable is True:
@@ -401,13 +429,13 @@ class TimeframeController:
 
 	def iniSine(self):
 		self.__agilent.setSine()
-		
+
 	def iniBurst(self):
 		self.__agilent.setBurstMode()
-		
+
 	def iniSine2(self):
 		self.__agilent2.setSine()
-		
+
 	def iniBurst2(self):
 		self.__agilent2.setBurstMode()
 
@@ -443,7 +471,7 @@ class TimeframeController:
 		self.__andor.startAcquisition(self.__data[2])
 		logger.debug('Camera initialized')
 		logger.debug('timeframe has started')
-		
+
 		if self.mode == MODE_SCAN:
 			# unfortunately, here, too we have to do a few things about scanning
 			self.scanInfo = self.nextScanInfo
@@ -455,15 +483,20 @@ class TimeframeController:
 				self.scanParameters.timestamp = datetime.now().strftime('/%Y%m%d-%H%M%S-')
 				baseName = self.scanParameters.folder + self.scanParameters.timestamp
 				saveTimeframe(baseName + 'timeframe.csv', self.timeframe)
-		
+
+		if self.mode == MODE_EXTERNAL:
+                        # save the timeframe for remote control as for the scan mode
+                        baseName = './External/'
+                        saveTimeframe(baseName + 'timeframe.csv', self.timeframe) #this will overwrite the file in each run
+
 		# update scan info displayed in UI (if scanInfo is None -> no scan running)
-		self.ui.updateScanInfo(self.scanInfo) 
+		self.ui.updateScanInfo(self.scanInfo)
 		self.ui.updateModeInfo(self.mode, self.modeNext)
 		self.cycleCount += 1
-		
+
 		self.prepareTimeframe()
 		return True
-		
+
 	def clock_tick(self):
 		'''regularly check timeframe progress, poll camera, process results, react if timeframe has finnished'''
 		if self.mode == MODE_STOPPED or self.mode == MODE_DIRECT:
@@ -471,7 +504,7 @@ class TimeframeController:
 		# no matter what mode it is if it's not MODE_STOPPED, we need to
 		# update the progress bar and check the camera for new images.
 		# only what is done at the end of a cycle differs from mode to mode
-		
+
 		progress = self.__vpc.getPercentageComplete()
 		if progress < 1: # cycle is not finnished yet
 			self.ui.pbTimeframeProgress.set_fraction(progress)
@@ -492,12 +525,19 @@ class TimeframeController:
 					logger.debug('final ui update to end SCAN')
 				self.mode = MODE_CONTINUOUS
 				self.startTimeframe()
+
+			elif self.modeNext == MODE_EXTERNAL:
+				if self.mode == MODE_SCAN: # we are changing from SCAN to EXTERNAL, so we have to update the ui one last time
+					logger.debug('final ui update to end SCAN')
+				self.mode = MODE_EXTERNAL
+				self.startTimeframe()
+
 			elif self.modeNext == MODE_SCAN:
 				self.mode = MODE_SCAN
 				self.startTimeframe()
 		return True # keep timer running
-		
-		
+
+
 	def acquireData(self):
 		'''called when data is available (near the end of the timeframe
 		gets all data from camera (and potentially other devices), and processes/saves it'''
@@ -509,17 +549,17 @@ class TimeframeController:
 		lower = 1.*(light - dark)
 		prod = upper*lower
 		upper = numpy.where(prod > 0, upper, 1)
-		lower = numpy.where(prod > 0, lower, 1)				
+		lower = numpy.where(prod > 0, lower, 1)
 		od = -numpy.log(upper/lower)
-	
+
 		self.ui.plotter.setImages((dark, light, absorption, od))
-		
+
 		logger.info('camera temperature is: ' + str(self.__andor.getTemperature()))
 
-		if settings['main.runFit']:# or self.mode == MODE_SCAN: 
+		if settings['main.runFit']:# or self.mode == MODE_SCAN:
 			fitResult = self.ui.plotter.getImageInfo()
 			self.ui.setFitResults(*fitResult)
-			
+
 			if self.mode == MODE_SCAN:
 				line = []
 				map(line.extend, self.scanInfo) #pylint: disable=W0141
@@ -527,12 +567,12 @@ class TimeframeController:
 				with open(self.scanParameters.folder + '/' + self.scanParameters.firstTimestamp + '-' + self.scanParameters.name + '_fitResults.csv', 'a+b') as ifile:
 					writer = csv.writer(ifile, delimiter='\t')
 					writer.writerow(line)
-			
+
 				# also update liveview
 				if self.scanInfo[0][1] != '--': # the last means we're not in dummies anymore
 					self.ui.dlgDataLog.addDataPoint(self.scanParameters.scanID, float(self.scanInfo[0][1]), fitResult)
 			self.ui.dlgDataLog.addDataPoint(0, self.cycleCount, fitResult)
-		
+
 		if self.mode == MODE_SCAN or settings['main.saveAll']:
 			print 'saving data!'
 			try:
@@ -542,7 +582,7 @@ class TimeframeController:
 			savePGM(baseName + 'absorption.pgm', absorption)
 			savePGM(baseName + 'light.pgm', light)
 			savePGM(baseName + 'dark.pgm', dark)
-		
+
 			# also get new scope data (?)
 			if settings['scope.use']:
 				data = []
@@ -558,10 +598,20 @@ class TimeframeController:
 				with open(baseName + 'scope.csv', 'wb') as ifile:
 					writer = csv.writer(ifile, delimiter='\t')
 					writer.writerows(zip(*data))
-		logger.debug('finnished retrieving images')
-			
+
+		if self.mode == MODE_EXTERNAL:
+                        logger.info('save the data into folder External for remote use')
+                        baseName = './External/'
+                        savePGM(baseName + 'absorption.pgm', absorption) #the pictures will be overwritten in every acquireData
+                        savePGM(baseName + 'light.pgm', light)
+                        savePGM(baseName + 'dark.pgm', dark)
+
+		logger.debug('finished retrieving images')
+
 	def shutdown(self):
 		'''cleanup'''
 		gobject.source_remove(self.timer_id)
 		self.__vpc.shutdown()
 
+
+		
