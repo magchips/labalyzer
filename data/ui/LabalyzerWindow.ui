@@ -12,6 +12,12 @@
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
+  <object class="GtkAdjustment" id="adjAgilentAmp2">
+    <property name="lower">0.01</property>
+    <property name="upper">10</property>
+    <property name="step_increment">0.10000000000000001</property>
+    <property name="page_increment">0.10000000000000001</property>
+  </object>
   <object class="GtkAdjustment" id="adjAgilentAmp">
     <property name="lower">0.01</property>
     <property name="upper">10</property>
@@ -19,19 +25,13 @@
     <property name="step_increment">0.10000000000000001</property>
     <property name="page_increment">0.10000000000000001</property>
   </object>
-  <object class="GtkAdjustment" id="adjAgilentAmp2">
-    <property name="lower">0.01</property>
-    <property name="upper">10</property>
-    <property name="step_increment">0.10000000000000001</property>
-    <property name="page_increment">0.10000000000000001</property>
-  </object>
-  <object class="GtkAdjustment" id="adjAgilentFrequency2">
+  <object class="GtkAdjustment" id="adjAgilentFrequency">
     <property name="upper">80000000</property>
     <property name="value">1000000</property>
     <property name="step_increment">1000</property>
     <property name="page_increment">10000</property>
   </object>
-  <object class="GtkAdjustment" id="adjAgilentFrequency">
+  <object class="GtkAdjustment" id="adjAgilentFrequency2">
     <property name="upper">80000000</property>
     <property name="value">1000000</property>
     <property name="step_increment">1000</property>
@@ -46,11 +46,6 @@
     <property name="upper">50000</property>
     <property name="step_increment">1</property>
     <property name="page_increment">100</property>
-  </object>
-  <object class="GtkAdjustment" id="adjVoltage">
-    <property name="upper">72</property>
-    <property name="step_increment">0.10000000000000001</property>
-    <property name="page_increment">0.10000000000000001</property>
   </object>
   <object class="GtkAdjustment" id="adjMagnification">
     <property name="upper">100</property>
@@ -104,6 +99,11 @@
     <property name="upper">1000</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjVoltage">
+    <property name="upper">72</property>
+    <property name="step_increment">0.10000000000000001</property>
+    <property name="page_increment">0.10000000000000001</property>
   </object>
   <object class="GtkImage" id="image2">
     <property name="visible">True</property>
@@ -507,18 +507,6 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkComboBox" id="cmbFitMethod">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="model">lsFitMethod</property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">4</property>
-                              </packing>
-                            </child>
-                            <child>
                               <object class="GtkHButtonBox" id="hbuttonbox1">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
@@ -550,6 +538,18 @@
                                     <property name="position">1</property>
                                   </packing>
                                 </child>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">4</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkComboBox" id="cmbFitMethod">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="model">lsFitMethod</property>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -1345,6 +1345,19 @@
                                     <property name="expand">False</property>
                                     <property name="fill">False</property>
                                     <property name="position">6</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkButton" id="btnExternal">
+                                    <property name="label" translatable="yes">External</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">True</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">7</property>
                                   </packing>
                                 </child>
                               </object>
