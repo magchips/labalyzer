@@ -366,7 +366,8 @@ class TimeframeCompiler:
 		# but that doesn't actually improve calculation speed, so we'll keep all columns for now
 		# this lower part is where most of the CPU time of this function is spent
 
-		AOSamples = [numpy.zeros((len(analogCommands)*8, ), dtype=numpy.float64 ), numpy.zeros((len(analogCommands)*8, ), dtype=numpy.float64 )] # *8 for 8 channels, two elements in list for device 1 and 2
+		AOSamples = [numpy.zeros((len(analogCommands)*8, ), dtype=numpy.float64 ),
+                             numpy.zeros((len(analogCommands)*8, ), dtype=numpy.float64 )] # *8 for 8 channels, two elements in list for device 1 and 2
 		DIOSamples = numpy.zeros((len(digitalCommands)*6, ), dtype=numpy.uint16) # 6 = 2 for the timestamp + 4 (for 16 channels in A through D)
 
 		analogKeys = sorted(analogCommands.iterkeys())

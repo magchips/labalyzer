@@ -212,6 +212,7 @@ class TimeframeController:
                                 openTimeframe(self.filename, self.timeframe) #overwrite the current timeframe
                                 self.timeframeIsCompiled = False #forces recompilation
                                 self.timeframeIsLoaded = True
+                                logger.debug('timeframe overwritten and asked to recompile')
                         else:
                                 logger.error('no timeframe for remote control. cannot update any external changes')
 
@@ -310,7 +311,8 @@ class TimeframeController:
                                 self.modeNext = MODE_STOPPED
                         else:
                                 recompile = True # always enforce recompilation in external mode; main difference compared to CONTINUOUS mode here
-                                startNew = True
+                                if self.mode == MODE_STOPPED:
+                                        startNew = True
                                 self.modeNext = MODE_EXTERNAL
                         logger.debug('state change completed')
 
