@@ -486,10 +486,10 @@ class TimeframeController:
 				baseName = self.scanParameters.folder + self.scanParameters.timestamp
 				saveTimeframe(baseName + 'timeframe.csv', self.timeframe)
 
-		if self.mode == MODE_EXTERNAL:
+		#if self.mode == MODE_EXTERNAL:
                         # save the timeframe for remote control as for the scan mode
-                        baseName = './External/'
-                        saveTimeframe(baseName + 'timeframe.csv', self.timeframe) #this will overwrite the file in each run
+		baseName = 'Z:/data/External/'
+		saveTimeframe(baseName + 'timeframe.csv', self.timeframe) #this will overwrite the file in each run
 
 		# update scan info displayed in UI (if scanInfo is None -> no scan running)
 		self.ui.updateScanInfo(self.scanInfo)
@@ -601,12 +601,12 @@ class TimeframeController:
 					writer = csv.writer(ifile, delimiter='\t')
 					writer.writerows(zip(*data))
 
-		if self.mode == MODE_EXTERNAL:
-                        logger.info('save the data into folder External for remote use')
-                        baseName = './External/'
-                        savePGM(baseName + 'absorption.pgm', absorption) #the pictures will be overwritten in every acquireData
-                        savePGM(baseName + 'light.pgm', light)
-                        savePGM(baseName + 'dark.pgm', dark)
+		#if self.mode == MODE_EXTERNAL:
+		logger.info('save the data into folder External for remote use')
+		baseName = 'Z:/data/External/'
+		savePGM(baseName + 'pic1.pgm', absorption) #the pictures will be overwritten in every acquireData
+		savePGM(baseName + 'pic2.pgm', light)
+		savePGM(baseName + 'pic3.pgm', dark)
 
 		logger.debug('finished retrieving images')
 
