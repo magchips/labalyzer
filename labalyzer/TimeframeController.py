@@ -85,6 +85,7 @@ class TimeframeController:
 		self.modeNext = MODE_STOPPED
 		self.ui = ui
 		self.prepareExt = True
+		self.baseName = 'D:/Data/External/' # for external data storage
 
 		self.ui.dlgDataLog.addScan(0, 'global', ['fitX', 'fitY', 'roi'], None)
 		self.ui.dlgDataLog.setActiveScan(0)
@@ -487,16 +488,13 @@ class TimeframeController:
 				baseName = self.scanParameters.folder + self.scanParameters.timestamp
 				saveTimeframe(baseName + 'timeframe.csv', self.timeframe)
 
-		#if self.mode == MODE_EXTERNAL:
-                        # save the timeframe for remote control as for the scan mode
-		baseName = 'Z:/data/External/'
-		saveTimeframe(baseName + 'timeframe.csv', self.timeframe) #this will overwrite the file in each run
-
+		
 		# update scan info displayed in UI (if scanInfo is None -> no scan running)
 		self.ui.updateScanInfo(self.scanInfo)
 		self.ui.updateModeInfo(self.mode, self.modeNext)
 		self.cycleCount += 1
 
+                #this is set here to prevent the preparation of the timeframe in external mode as it would already replace the current one
 		if not self.mode == MODE_EXTERNAL:
 			self.prepareTimeframe()
 		return True
@@ -510,11 +508,16 @@ class TimeframeController:
 		# only what is done at the end of a cycle differs from mode to mode
                 
 		progress = self.__vpc.getPercentageComplete()
-		#logger.debug('the progress is: ' + str(progress))
-
-		if progress >= 0.75 and self.modeNext == MODE_EXTERNAL and self.prepareExt == True:
+		
+                #enforces compilation of the timeframe in External mode before new timeframe is started
+		#time for that is set to 0.75 of timeframe progress which can be adjusted if not optimal
+		#advantage is that if compilation takes place during the cycle it will not delay the next one which happens if compilation takes place in the beginning
+		if progress >= 0.75 and self.modeNext == MODE_EXTERNAL and self.prepareExt == True:  
+			
+			saveTimeframe(self.baseName + 'timeframe.csv', self.timeframe) #save the current timeframe before it is overwritten by the recompilation
 			self.prepareTimeframe()
-			self.prepareExt=False
+			self.prepareExt=False #flag to make sure this only happens once per timeframe
+
 		elif progress < 1: # cycle is not finnished yet
 			self.ui.pbTimeframeProgress.set_fraction(progress)
 			if self.__andor.getNumberAvailableImages() == 3:
@@ -540,8 +543,7 @@ class TimeframeController:
 				if self.mode == MODE_SCAN: # we are changing from SCAN to EXTERNAL, so we have to update the ui one last time
 					logger.debug('final ui update to end SCAN')
 				self.mode = MODE_EXTERNAL
-				#self.prepareTimeframe()
-				self.prepareExt = True
+				self.prepareExt = True #reset flag to true to be able to enter first if condition again
 				self.startTimeframe()
 
 			elif self.modeNext == MODE_SCAN:
@@ -613,10 +615,10 @@ class TimeframeController:
 
 		#if self.mode == MODE_EXTERNAL:
 		logger.info('save the data into folder External for remote use')
-		baseName = 'Z:/data/External/'
-		savePGM(baseName + 'pic1.pgm', absorption) #the pictures will be overwritten in every acquireData
-		savePGM(baseName + 'pic2.pgm', light)
-		savePGM(baseName + 'pic3.pgm', dark)
+		
+		savePGM(self.baseName + 'pic1.pgm', absorption) #the pictures will be overwritten in every acquireData
+		savePGM(self.baseName + 'pic2.pgm', light)
+		savePGM(self.baseName + 'pic3.pgm', dark)
 
 		logger.debug('finished retrieving images')
 
