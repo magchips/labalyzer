@@ -85,8 +85,8 @@ class TimeframeController:
 		self.modeNext = MODE_STOPPED
 		self.ui = ui
 		self.prepareExt = True
-		self.baseName = 'D:/Data/External/' # for external data storage
-
+		#self.baseName = 'D:/Data/External/' # for external data storage
+		self.baseName = 'Z:/data/External/' # for external data storage
 		self.ui.dlgDataLog.addScan(0, 'global', ['fitX', 'fitY', 'roi'], None)
 		self.ui.dlgDataLog.setActiveScan(0)
 
