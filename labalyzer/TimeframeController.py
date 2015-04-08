@@ -84,6 +84,7 @@ class TimeframeController:
 		self.mode = MODE_STOPPED
 		self.modeNext = MODE_STOPPED
 		self.ui = ui
+		self.prepareExt = True
 
 		self.ui.dlgDataLog.addScan(0, 'global', ['fitX', 'fitY', 'roi'], None)
 		self.ui.dlgDataLog.setActiveScan(0)
@@ -496,7 +497,8 @@ class TimeframeController:
 		self.ui.updateModeInfo(self.mode, self.modeNext)
 		self.cycleCount += 1
 
-		self.prepareTimeframe()
+		if not self.mode == MODE_EXTERNAL:
+			self.prepareTimeframe()
 		return True
 
 	def clock_tick(self):
@@ -506,12 +508,18 @@ class TimeframeController:
 		# no matter what mode it is if it's not MODE_STOPPED, we need to
 		# update the progress bar and check the camera for new images.
 		# only what is done at the end of a cycle differs from mode to mode
-
+                
 		progress = self.__vpc.getPercentageComplete()
-		if progress < 1: # cycle is not finnished yet
+		#logger.debug('the progress is: ' + str(progress))
+
+		if progress >= 0.75 and self.modeNext == MODE_EXTERNAL and self.prepareExt == True:
+			self.prepareTimeframe()
+			self.prepareExt=False
+		elif progress < 1: # cycle is not finnished yet
 			self.ui.pbTimeframeProgress.set_fraction(progress)
 			if self.__andor.getNumberAvailableImages() == 3:
 				self.acquireData()
+				
 		else: # cycle is now finnished. what do we do next?
 			logger.debug('cycle has stopped')
 			self.__nc.stopTask()
@@ -532,6 +540,8 @@ class TimeframeController:
 				if self.mode == MODE_SCAN: # we are changing from SCAN to EXTERNAL, so we have to update the ui one last time
 					logger.debug('final ui update to end SCAN')
 				self.mode = MODE_EXTERNAL
+				#self.prepareTimeframe()
+				self.prepareExt = True
 				self.startTimeframe()
 
 			elif self.modeNext == MODE_SCAN:
