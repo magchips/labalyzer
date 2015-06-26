@@ -28,7 +28,7 @@ import os, pickle
 import logging
 logger = logging.getLogger('labalyzer')
 
-SETTINGS_VERSION = 1.2
+SETTINGS_VERSION = 1.3
 class AnalogChannelDescriptor:
 	'''describes analog channels'''
 	def __init__(self, boardNumber, channelNumber, minvalue=-10, maxvalue=10, scalefactor=1):
@@ -140,6 +140,16 @@ class LabalyzerSettings(dict):
 		self['AnalogChannels']['u-wire'] = AnalogChannelDescriptor(0, 6, minvalue=0)
 		self['AnalogChannels']['extra8'] = AnalogChannelDescriptor(0, 7, minvalue=0)
 
+		self['AnalogChannels']['2, 0'] = AnalogChannelDescriptor(2, 0, minvalue=0)
+		self['AnalogChannels']['2, 1'] = AnalogChannelDescriptor(2, 1, minvalue=0, maxvalue=6)
+		self['AnalogChannels']['2, 2'] = AnalogChannelDescriptor(2, 2, minvalue=-12, maxvalue=12, scalefactor=0.847)
+		self['AnalogChannels']['2, 3'] = AnalogChannelDescriptor(2, 3, minvalue=-12, maxvalue=12, scalefactor=0.83333)
+		self['AnalogChannels']['2, 4'] = AnalogChannelDescriptor(2, 4, minvalue=-20, maxvalue=20, scalefactor=0.836)
+		self['AnalogChannels']['2, 5'] = AnalogChannelDescriptor(2, 5, minvalue=-20, maxvalue=20, scalefactor=0.502)
+		self['AnalogChannels']['2, 6'] = AnalogChannelDescriptor(2, 6, minvalue=-12, maxvalue=12, scalefactor=0.83333)
+		self['AnalogChannels']['2, 7'] = AnalogChannelDescriptor(2, 7, minvalue=0)
+
+
 		# digital channels 0-4 correspong to boards a-d
 		self['DigitalChannels'] = dict()
 		self['DigitalChannels']['Camera trigger'] = DigitalChannelDescriptor(0, 0, 'high', 'low')
@@ -191,7 +201,7 @@ class LabalyzerSettings(dict):
 		self['DigitalChannels']['2, 12'] = DigitalChannelDescriptor(2, 12, 'open', 'shut')
 		self['DigitalChannels']['2, 13'] = DigitalChannelDescriptor(2, 13, 'open', 'shut')
 		self['DigitalChannels']['2, 14'] = DigitalChannelDescriptor(2, 14, 'open', 'shut')
-		self['DigitalChannels']['2, 15'] = DigitalChannelDescriptor(2, 15)
+		self['DigitalChannels']['AnalogTrigger2'] = DigitalChannelDescriptor(2, 15)
 
 		self['DigitalChannels']['3, 0'] = DigitalChannelDescriptor(3, 0, 'high', 'low')
 		self['DigitalChannels']['3, 1'] = DigitalChannelDescriptor(3, 1, 'open', 'shut')
