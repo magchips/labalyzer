@@ -28,266 +28,278 @@ import os, pickle
 import logging
 logger = logging.getLogger('labalyzer')
 
-SETTINGS_VERSION = 1.2
+SETTINGS_VERSION = 1.7
 class AnalogChannelDescriptor:
-	'''describes analog channels'''
-	def __init__(self, boardNumber, channelNumber, minvalue=-10, maxvalue=10, scalefactor=1):
-		self.boardNumber = boardNumber
-		self.channelNumber = channelNumber
-		self.maxvalue = maxvalue
-		self.minvalue = minvalue
-		self.scalefactor = scalefactor
-	def __str__(self):
-		return 'AO' + str(self.channelNumber)
-	def GetDeviceString(self):
-		'''get string for device to pass to DAQmx'''
-		return 'Dev' + str(self.boardNumber+1) + '/ao' + str(self.channelNumber) # NIDAQ starts counting at 1, we start counting at 0, hence the + 1
-
+    '''describes analog channels'''
+    def __init__(self, boardNumber, channelNumber, minvalue=-10, maxvalue=10, scalefactor=1):
+        self.boardNumber = boardNumber
+        self.channelNumber = channelNumber
+        self.maxvalue = maxvalue
+        self.minvalue = minvalue
+        self.scalefactor = scalefactor
+    def __str__(self):
+        return 'AO' + str(self.channelNumber)
+    def GetDeviceString(self):
+        '''get string for device to pass to DAQmx'''
+        if self.boardNumber in [0,1]:
+                return 'Dev' + str(self.boardNumber+1) + '/ao' + str(self.channelNumber) # NIDAQ starts counting at 1, we start counting at 0, hence the + 1
+        elif self.boardNumber in [2,3]:
+                return 'Dev' + str(self.boardNumber+2) + '/ao' + str(self.channelNumber) # NIDAQ starts counting at 1, we start counting at 0, hence the + 1
 class DigitalChannelDescriptor:
-	'''describes digital channels'''
-	def __init__(self, port, channel, highname='high', lowname='low'):
-		self.channelNumber = channel
-		self.bitmask = numpy.uint16(2**channel)
-		self.invertedBitmask = numpy.invert(self.bitmask)
-		self.portNumber = port
-		self.highname = highname
-		self.lowname = lowname
-	def __str__(self):
-		return 'DIO' + str(self.channelNumber)
+    '''describes digital channels'''
+    def __init__(self, port, channel, highname='high', lowname='low'):
+        self.channelNumber = channel
+        self.bitmask = numpy.uint16(2**channel)
+        self.invertedBitmask = numpy.invert(self.bitmask)
+        self.portNumber = port
+        self.highname = highname
+        self.lowname = lowname
+    def __str__(self):
+        return 'DIO' + str(self.channelNumber)
 
 
 class RampFunctionDescriptor:
-	'''describes ramp functions'''
-	def __init__(self, sample_definition, time_calculation, value_calculation):
-		self.sample_definition = sample_definition
-		self.time_calculation = time_calculation
-		self.value_calculation = value_calculation
+    '''describes ramp functions'''
+    def __init__(self, sample_definition, time_calculation, value_calculation):
+        self.sample_definition = sample_definition
+        self.time_calculation = time_calculation
+        self.value_calculation = value_calculation
 
 class LabalyzerSettings(dict):
-	'''saves settings'''
-	
-	def __init__(self, *args, **kwds):
-		class Publisher(gtk.Invisible): # pylint: disable=R0904
-			'''set up signals in a separate class			
-			gtk.Invisible has 230 public methods'''
-			__gsignals__ = {'changed' : (gobject.SIGNAL_RUN_LAST,
-				 gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,)),
-				 'loaded' : (gobject.SIGNAL_RUN_LAST,
-				 gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,))}
-		
-		dict.__init__(self, *args, **kwds)
-		
-		publisher = Publisher()
-		self.emit  = publisher.emit
-		self.connect  = publisher.connect
-		
-		if os.name == 'posix':
-			# we're on Linux
-			from xdg import BaseDirectory #pylint bug; #pylint: disable=W0404
-			basePath = BaseDirectory.xdg_config_home
-			self.configPath = os.path.join(basePath, 'labalyzer')
-			if not os.path.exists(self.configPath):
-				os.makedirs(self.configPath)
-		elif os.name == 'nt':
-			# we're on Windows
-			basePath = os.environ['AppData']
-			self.configPath = os.path.join(basePath, 'labalyzer')
-			if not os.path.exists(self.configPath):
-				os.makedirs(self.configPath)
-			
-		versionPath = os.path.join(self.configPath, 'version')
-		if os.path.exists(versionPath):
-			with open(versionPath, 'rb') as f:
-				self.version = pickle.load(f)
-		else:
-			self.version = 0
-			
+    '''saves settings'''
+    
+    def __init__(self, *args, **kwds):
+        class Publisher(gtk.Invisible): # pylint: disable=R0904
+            '''set up signals in a separate class           
+            gtk.Invisible has 230 public methods'''
+            __gsignals__ = {'changed' : (gobject.SIGNAL_RUN_LAST,
+                 gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,)),
+                 'loaded' : (gobject.SIGNAL_RUN_LAST,
+                 gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,))}
+        
+        dict.__init__(self, *args, **kwds)
+        
+        publisher = Publisher()
+        self.emit  = publisher.emit
+        self.connect  = publisher.connect
+        
+        if os.name == 'posix':
+            # we're on Linux
+            from xdg import BaseDirectory #pylint bug; #pylint: disable=W0404
+            basePath = BaseDirectory.xdg_config_home
+            self.configPath = os.path.join(basePath, 'labalyzer')
+            if not os.path.exists(self.configPath):
+                os.makedirs(self.configPath)
+        elif os.name == 'nt':
+            # we're on Windows
+            basePath = os.environ['AppData']
+            self.configPath = os.path.join(basePath, 'labalyzer')
+            if not os.path.exists(self.configPath):
+                os.makedirs(self.configPath)
+            
+        versionPath = os.path.join(self.configPath, 'version')
+        if os.path.exists(versionPath):
+            with open(versionPath, 'rb') as f:
+                self.version = pickle.load(f)
+        else:
+            self.version = 0
+            
 
 
-	def loadSettings(self):
-		'''load settings from file'''
-		settingsPath = os.path.join(self.configPath, 'settings')
-		if self.version != SETTINGS_VERSION or not os.path.exists(settingsPath):
-			# we need to rest to default
-			logger.warn('settings are out of date, need to reset to defaults')
-			self.setDefaults()
-		else:
-			with open(settingsPath, 'rb') as f:
-				self.update(pickle.load(f))
-		
-	def setDefaults(self):
-		'''set default values if file can't be read'''
-		#pylint: disable=R0915
-		self.version = SETTINGS_VERSION
-		self['SamplesPerMillisecond'] = 100
-		self['DigitalSamplesPerMillisecond'] = 10000
-		
-		self['AnalogChannels'] = dict()
-		self['AnalogChannels']['AOM'] = AnalogChannelDescriptor(1, 0, minvalue=0)
-		self['AnalogChannels']['EOM'] = AnalogChannelDescriptor(1, 1, minvalue=0, maxvalue=6)
-		self['AnalogChannels']['Big coils'] = AnalogChannelDescriptor(1, 2, minvalue=-12, maxvalue=12, scalefactor=0.847)
-		self['AnalogChannels']['MOT coil'] = AnalogChannelDescriptor(1, 3, minvalue=-12, maxvalue=12, scalefactor=0.83333)
-		self['AnalogChannels']['Small coil'] = AnalogChannelDescriptor(1, 4, minvalue=-20, maxvalue=20, scalefactor=0.836)
-		self['AnalogChannels']['z-wire'] = AnalogChannelDescriptor(1, 5, minvalue=-20, maxvalue=20, scalefactor=0.502)
-		self['AnalogChannels']['MC'] = AnalogChannelDescriptor(1, 6, minvalue=-12, maxvalue=12, scalefactor=0.83333)
-		self['AnalogChannels']['Repump EOM'] = AnalogChannelDescriptor(1, 7, minvalue=0)
-		self['AnalogChannels']['pinch wires'] = AnalogChannelDescriptor(0, 0, minvalue=0, maxvalue=10, scalefactor=1./1.97)
-		self['AnalogChannels']['Opt pump AOM'] = AnalogChannelDescriptor(0, 1, minvalue=0)
-		self['AnalogChannels']['unused'] = AnalogChannelDescriptor(0, 2)
-		self['AnalogChannels']['Probe AOM Detuning'] = AnalogChannelDescriptor(0, 3, minvalue=-5)
-		self['AnalogChannels']['extra x-field'] = AnalogChannelDescriptor(0, 4)
-		self['AnalogChannels']['Attenuate rf'] = AnalogChannelDescriptor(0, 5)
-		self['AnalogChannels']['u-wire'] = AnalogChannelDescriptor(0, 6, minvalue=0)
-		self['AnalogChannels']['extra8'] = AnalogChannelDescriptor(0, 7, minvalue=0)
+    def loadSettings(self):
+        '''load settings from file'''
+        settingsPath = os.path.join(self.configPath, 'settings')
+        if self.version != SETTINGS_VERSION or not os.path.exists(settingsPath):
+            # we need to rest to default
+            logger.warn('settings are out of date, need to reset to defaults')
+            self.setDefaults()
+        else:
+            with open(settingsPath, 'rb') as f:
+                self.update(pickle.load(f))
+        
+    def setDefaults(self):
+        '''set default values if file can't be read'''
+        #pylint: disable=R0915
+        self.version = SETTINGS_VERSION
+        self['SamplesPerMillisecond'] = 100
+        self['DigitalSamplesPerMillisecond'] = 10000
+        
+        self['AnalogChannels'] = dict()
+        self['AnalogChannels']['AOM'] = AnalogChannelDescriptor(1, 0, minvalue=0)
+        self['AnalogChannels']['EOM'] = AnalogChannelDescriptor(1, 1, minvalue=0, maxvalue=6)
+        self['AnalogChannels']['Big coils'] = AnalogChannelDescriptor(1, 2, minvalue=-12, maxvalue=12, scalefactor=0.847)
+        self['AnalogChannels']['MOT coil'] = AnalogChannelDescriptor(1, 3, minvalue=-12, maxvalue=12, scalefactor=0.83333)
+        self['AnalogChannels']['Small coil'] = AnalogChannelDescriptor(1, 4, minvalue=-20, maxvalue=20, scalefactor=0.836)
+        self['AnalogChannels']['z-wire'] = AnalogChannelDescriptor(1, 5, minvalue=-20, maxvalue=20, scalefactor=0.502)
+        self['AnalogChannels']['MC'] = AnalogChannelDescriptor(1, 6, minvalue=-12, maxvalue=12, scalefactor=0.83333)
+        self['AnalogChannels']['Repump EOM'] = AnalogChannelDescriptor(1, 7, minvalue=0)
+        self['AnalogChannels']['pinch wires'] = AnalogChannelDescriptor(0, 0, minvalue=0, maxvalue=10, scalefactor=1./1.97)
+        self['AnalogChannels']['Opt pump AOM'] = AnalogChannelDescriptor(0, 1, minvalue=0)
+        self['AnalogChannels']['unused'] = AnalogChannelDescriptor(0, 2)
+        self['AnalogChannels']['Probe AOM Detuning'] = AnalogChannelDescriptor(0, 3, minvalue=-5)
+        self['AnalogChannels']['extra x-field'] = AnalogChannelDescriptor(0, 4)
+        self['AnalogChannels']['Attenuate rf'] = AnalogChannelDescriptor(0, 5)
+        self['AnalogChannels']['u-wire'] = AnalogChannelDescriptor(0, 6, minvalue=0)
+        self['AnalogChannels']['extra8'] = AnalogChannelDescriptor(0, 7, minvalue=0)
 
-		# digital channels 0-4 correspong to boards a-d
-		self['DigitalChannels'] = dict()
-		self['DigitalChannels']['Camera trigger'] = DigitalChannelDescriptor(0, 0, 'high', 'low')
-		self['DigitalChannels']['OptPump Shutter'] = DigitalChannelDescriptor(0, 1, 'open', 'shut')
-		self['DigitalChannels']['MOT Shutter'] = DigitalChannelDescriptor(0, 2, 'open', 'shut')
-		self['DigitalChannels']['Probe  shutter'] = DigitalChannelDescriptor(0, 3, 'open', 'shut')
-		self['DigitalChannels']['Repump Shutter'] = DigitalChannelDescriptor(0, 4, 'open', 'shut')
-		self['DigitalChannels']['Trigger RedBlue'] = DigitalChannelDescriptor(0, 5, 'high', 'low')
-		self['DigitalChannels']['Rb dispenser'] = DigitalChannelDescriptor(0, 6, 'on', 'off')
-		self['DigitalChannels']['FET switches'] = DigitalChannelDescriptor(0, 7, 'on', 'off')
-		self['DigitalChannels']['Raman Trigger'] = DigitalChannelDescriptor(0, 8, 'high', 'low')
-		self['DigitalChannels']['RF switch'] = DigitalChannelDescriptor(0, 9, 'output2', 'output1')
-		self['DigitalChannels']['MOS-FET/Relais'] = DigitalChannelDescriptor(0, 10, 'on', 'off')
-		self['DigitalChannels']['Probe AOM Switch'] = DigitalChannelDescriptor(0, 11, 'on', 'off')
-		self['DigitalChannels']['Red Shutter'] = DigitalChannelDescriptor(0, 12, 'open', 'shut')
-		self['DigitalChannels']['Blue Shutter'] = DigitalChannelDescriptor(0, 13, 'open', 'shut')
-		self['DigitalChannels']['Cam shutter'] = DigitalChannelDescriptor(0, 14, 'open', 'shut')
-		self['DigitalChannels']['AnalogTrigger'] = DigitalChannelDescriptor(0, 15)
-
-		self['DigitalChannels']['1, 0'] = DigitalChannelDescriptor(1, 0, 'high', 'low')
-		self['DigitalChannels']['1, 1'] = DigitalChannelDescriptor(1, 1, 'open', 'shut')
-		self['DigitalChannels']['1, 2'] = DigitalChannelDescriptor(1, 2, 'open', 'shut')
-		self['DigitalChannels']['1, 3'] = DigitalChannelDescriptor(1, 3, 'open', 'shut')
-		self['DigitalChannels']['1, 4'] = DigitalChannelDescriptor(1, 4, 'open', 'shut')
-		self['DigitalChannels']['1, 5'] = DigitalChannelDescriptor(1, 5, 'high', 'low')
-		self['DigitalChannels']['1, 6'] = DigitalChannelDescriptor(1, 6, 'on', 'off')
-		self['DigitalChannels']['1, 7'] = DigitalChannelDescriptor(1, 7, 'on', 'off')
-		self['DigitalChannels']['1, 8'] = DigitalChannelDescriptor(1, 8, 'high', 'low')
-		self['DigitalChannels']['1, 9'] = DigitalChannelDescriptor(1, 9, 'output1', 'output2')
-		self['DigitalChannels']['1, 10'] = DigitalChannelDescriptor(1, 10, 'on', 'off')
-		self['DigitalChannels']['1, 11'] = DigitalChannelDescriptor(1, 11, 'on', 'off')
-		self['DigitalChannels']['1, 12'] = DigitalChannelDescriptor(1, 12, 'open', 'shut')
-		self['DigitalChannels']['1, 13'] = DigitalChannelDescriptor(1, 13, 'open', 'shut')
-		self['DigitalChannels']['1, 14'] = DigitalChannelDescriptor(1, 14, 'open', 'shut')
-		self['DigitalChannels']['1, 15'] = DigitalChannelDescriptor(1, 15)
-
-		self['DigitalChannels']['Red AOM'] = DigitalChannelDescriptor(2, 0, 'open', 'shut')
-		self['DigitalChannels']['Blue EOM'] = DigitalChannelDescriptor(2, 1, 'open', 'shut')
-		self['DigitalChannels']['Raman AOM'] = DigitalChannelDescriptor(2, 2, 'open', 'shut')
-		self['DigitalChannels']['2, 3'] = DigitalChannelDescriptor(2, 3, 'open', 'shut')
-		self['DigitalChannels']['2, 4'] = DigitalChannelDescriptor(2, 4, 'open', 'shut')
-		self['DigitalChannels']['2, 5'] = DigitalChannelDescriptor(2, 5, 'high', 'low')
-		self['DigitalChannels']['2, 6'] = DigitalChannelDescriptor(2, 6, 'on', 'off')
-		self['DigitalChannels']['2, 7'] = DigitalChannelDescriptor(2, 7, 'on', 'off')
-		self['DigitalChannels']['2, 8'] = DigitalChannelDescriptor(2, 8, 'high', 'low')
-		self['DigitalChannels']['2, 9'] = DigitalChannelDescriptor(2, 9, 'output1', 'output2')
-		self['DigitalChannels']['2, 10'] = DigitalChannelDescriptor(2, 10, 'on', 'off')
-		self['DigitalChannels']['2, 11'] = DigitalChannelDescriptor(2, 11, 'on', 'off')
-		self['DigitalChannels']['2, 12'] = DigitalChannelDescriptor(2, 12, 'open', 'shut')
-		self['DigitalChannels']['2, 13'] = DigitalChannelDescriptor(2, 13, 'open', 'shut')
-		self['DigitalChannels']['2, 14'] = DigitalChannelDescriptor(2, 14, 'open', 'shut')
-		self['DigitalChannels']['2, 15'] = DigitalChannelDescriptor(2, 15)
-
-		self['DigitalChannels']['3, 0'] = DigitalChannelDescriptor(3, 0, 'high', 'low')
-		self['DigitalChannels']['3, 1'] = DigitalChannelDescriptor(3, 1, 'open', 'shut')
-		self['DigitalChannels']['3, 2'] = DigitalChannelDescriptor(3, 2, 'open', 'shut')
-		self['DigitalChannels']['3, 3'] = DigitalChannelDescriptor(3, 3, 'open', 'shut')
-		self['DigitalChannels']['3, 4'] = DigitalChannelDescriptor(3, 4, 'open', 'shut')
-		self['DigitalChannels']['3, 5'] = DigitalChannelDescriptor(3, 5, 'high', 'low')
-		self['DigitalChannels']['3, 6'] = DigitalChannelDescriptor(3, 6, 'on', 'off')
-		self['DigitalChannels']['3, 7'] = DigitalChannelDescriptor(3, 7, 'on', 'off')
-		self['DigitalChannels']['3, 8'] = DigitalChannelDescriptor(3, 8, 'high', 'low')
-		self['DigitalChannels']['3, 9'] = DigitalChannelDescriptor(3, 9, 'output1', 'output2')
-		self['DigitalChannels']['3, 10'] = DigitalChannelDescriptor(3, 10, 'on', 'off')
-		self['DigitalChannels']['3, 11'] = DigitalChannelDescriptor(3, 11, 'on', 'off')
-		self['DigitalChannels']['3, 12'] = DigitalChannelDescriptor(3, 12, 'open', 'shut')
-		self['DigitalChannels']['3, 13'] = DigitalChannelDescriptor(3, 13, 'open', 'shut')
-		self['DigitalChannels']['3, 14'] = DigitalChannelDescriptor(3, 14, 'open', 'shut')
-		self['DigitalChannels']['3, 15'] = DigitalChannelDescriptor(3, 15)
-
-		self['rampFunctions'] = dict()
-		self['rampFunctions']['ramp'] = RampFunctionDescriptor("int(ramptime*settings['SamplesPerMillisecond']/1000)", '[int(abs_time + t_step*x) for x in xrange(0, samples+1)]', '[last_values[device] - v_step*x for x in xrange(0, samples+1)]')
-		self['rampFunctions']['ramp100'] = RampFunctionDescriptor("int(ramptime*settings['SamplesPerMillisecond']/10/1000)", '[int(abs_time + t_step*x) for x in xrange(0, samples+1)]', '[last_values[device] - v_step*x for x in xrange(0, samples+1)]')
-		self['rampFunctions']['ramp_square'] = RampFunctionDescriptor("int(ramptime*settings['SamplesPerMillisecond']/1000)", '[int(abs_time + t_step*x) for x in xrange(0, samples+1)]', '[last_values[device] - v_step/samples*x**2 for x in xrange(0, samples+1)]')
-		self['rampFunctions']['ramp100_square'] = RampFunctionDescriptor("int(ramptime*settings['SamplesPerMillisecond']/10/1000)", '[int(abs_time + t_step*x) for x in xrange(0, samples+1)]', '[last_values[device] - v_step/samples*x**2 for x in xrange(0, samples+1)]')
-#		self['rampFunctions']['ramp_exp'] = RampFunctionDescriptor("int(ramptime*settings['SamplesPerMillisecond']/1000)", '[int(abs_time + t_step*x) for x in xrange(0, samples+1)]', '[numpy.exp(numpy.log(value-last_values[device]+1)/samples*x)+last_values[device]-1 for x in xrange(0, samples+1)]')
-#		self['rampFunctions']['ramp100_exp'] = RampFunctionDescriptor("int(ramptime*settings['SamplesPerMillisecond']/10/1000)", '[int(abs_time + t_step*x) for x in xrange(0, samples+1)]', '[numpy.exp(-numpy.log(last_values[device]-1+value)/samples*x)+last_values[device]-1 for x in xrange(0, samples+1)]')
+        self['AnalogChannels']['2, 0'] = AnalogChannelDescriptor(2, 0, minvalue=0)
+        self['AnalogChannels']['2, 1'] = AnalogChannelDescriptor(2, 1, minvalue=0, maxvalue=6)
+        self['AnalogChannels']['2, 2'] = AnalogChannelDescriptor(2, 2, minvalue=-12, maxvalue=12, scalefactor=0.847)
+        self['AnalogChannels']['2, 3'] = AnalogChannelDescriptor(2, 3, minvalue=-12, maxvalue=12, scalefactor=0.83333)
+        self['AnalogChannels']['2, 4'] = AnalogChannelDescriptor(2, 4, minvalue=-20, maxvalue=20, scalefactor=0.836)
+        self['AnalogChannels']['2, 5'] = AnalogChannelDescriptor(2, 5, minvalue=-20, maxvalue=20, scalefactor=0.502)
+        self['AnalogChannels']['2, 6'] = AnalogChannelDescriptor(2, 6, minvalue=-12, maxvalue=12, scalefactor=0.83333)
+        self['AnalogChannels']['2, 7'] = AnalogChannelDescriptor(2, 7, minvalue=0)
 
 
-		
-		# for plotter
-		self['plot.showCursor'] = False
-		self['plot.keepAspect'] = True
-		self['plot.maxOD'] = 1
-		self['plot.negFrac'] = 0.125
-		self['plot.cursorPos'] = [500, 400]
-		self['plot.ROI'] = None
+        # digital channels 0-4 correspong to boards a-d
+        self['DigitalChannels'] = dict()
+        self['DigitalChannels']['Camera trigger'] = DigitalChannelDescriptor(0, 0, 'high', 'low')
+        self['DigitalChannels']['OptPump Shutter'] = DigitalChannelDescriptor(0, 1, 'open', 'shut')
+        self['DigitalChannels']['MOT Shutter'] = DigitalChannelDescriptor(0, 2, 'open', 'shut')
+        self['DigitalChannels']['Probe  shutter'] = DigitalChannelDescriptor(0, 3, 'open', 'shut')
+        self['DigitalChannels']['Repump Shutter'] = DigitalChannelDescriptor(0, 4, 'open', 'shut')
+        self['DigitalChannels']['Trigger RedBlue'] = DigitalChannelDescriptor(0, 5, 'high', 'low')
+        self['DigitalChannels']['Rb dispenser'] = DigitalChannelDescriptor(0, 6, 'on', 'off')
+        self['DigitalChannels']['FET switches'] = DigitalChannelDescriptor(0, 7, 'on', 'off')
+        self['DigitalChannels']['Raman Trigger'] = DigitalChannelDescriptor(0, 8, 'high', 'low')
+        self['DigitalChannels']['RF switch'] = DigitalChannelDescriptor(0, 9, 'output2', 'output1')
+        self['DigitalChannels']['MOS-FET/Relais'] = DigitalChannelDescriptor(0, 10, 'on', 'off')
+        self['DigitalChannels']['Probe AOM Switch'] = DigitalChannelDescriptor(0, 11, 'on', 'off')
+        self['DigitalChannels']['Red Shutter'] = DigitalChannelDescriptor(0, 12, 'open', 'shut')
+        self['DigitalChannels']['Blue Shutter'] = DigitalChannelDescriptor(0, 13, 'open', 'shut')
+        self['DigitalChannels']['Cam shutter'] = DigitalChannelDescriptor(0, 14, 'open', 'shut')
+        self['DigitalChannels']['AnalogTrigger'] = DigitalChannelDescriptor(0, 15)
 
-		self['physics.magnification'] = 2.26
-		self['physics.trapfreq'] = 250
-		self['physics.timeofflight'] = 3
+        self['DigitalChannels']['1, 0'] = DigitalChannelDescriptor(1, 0, 'high', 'low')
+        self['DigitalChannels']['1, 1'] = DigitalChannelDescriptor(1, 1, 'open', 'shut')
+        self['DigitalChannels']['1, 2'] = DigitalChannelDescriptor(1, 2, 'open', 'shut')
+        self['DigitalChannels']['1, 3'] = DigitalChannelDescriptor(1, 3, 'open', 'shut')
+        self['DigitalChannels']['1, 4'] = DigitalChannelDescriptor(1, 4, 'open', 'shut')
+        self['DigitalChannels']['1, 5'] = DigitalChannelDescriptor(1, 5, 'high', 'low')
+        self['DigitalChannels']['1, 6'] = DigitalChannelDescriptor(1, 6, 'on', 'off')
+        self['DigitalChannels']['1, 7'] = DigitalChannelDescriptor(1, 7, 'on', 'off')
+        self['DigitalChannels']['1, 8'] = DigitalChannelDescriptor(1, 8, 'high', 'low')
+        self['DigitalChannels']['1, 9'] = DigitalChannelDescriptor(1, 9, 'output1', 'output2')
+        self['DigitalChannels']['1, 10'] = DigitalChannelDescriptor(1, 10, 'on', 'off')
+        self['DigitalChannels']['1, 11'] = DigitalChannelDescriptor(1, 11, 'on', 'off')
+        self['DigitalChannels']['1, 12'] = DigitalChannelDescriptor(1, 12, 'open', 'shut')
+        self['DigitalChannels']['1, 13'] = DigitalChannelDescriptor(1, 13, 'open', 'shut')
+        self['DigitalChannels']['1, 14'] = DigitalChannelDescriptor(1, 14, 'open', 'shut')
+        self['DigitalChannels']['1, 15'] = DigitalChannelDescriptor(1, 15)
 
-		
-		# other stuff for main window
-		self['main.showDataLog'] = True
-		self['main.runFit'] = False
-		self['main.fitMethod'] = FIT_MOMS2D
-		self['main.saveAll'] = False
-		
-		# for andor
-		self['andor.temp'] = -60
-		self['andor.mode'] = ANDOR_KINETIC
-		self['andor.pxSize'] = 13*10**(-6)
-		
-		# for scans
-		self['scan.dummies'] = 5
-		
-		self['scope.use'] = False
-		self['scope.channels'] = []
-		
-		self['fit.gauss'] = 'lambda p, x: p[0]*numpy.exp(-(x - p[1])**2/(2*p[2]**2)) + p[3]'
-		self['fit.lorentz'] = 'lambda p, x: p[0]*p[2]**2/((x - p[1])**2 + p[2]**2) + p[3]'
-		self['fit.allowOffset'] = False
-		
+        self['DigitalChannels']['Red AOM'] = DigitalChannelDescriptor(2, 0, 'open', 'shut')
+        self['DigitalChannels']['Blue EOM'] = DigitalChannelDescriptor(2, 1, 'open', 'shut')
+        self['DigitalChannels']['Raman AOM'] = DigitalChannelDescriptor(2, 2, 'open', 'shut')
+        self['DigitalChannels']['2, 3'] = DigitalChannelDescriptor(2, 3, 'open', 'shut')
+        self['DigitalChannels']['2, 4'] = DigitalChannelDescriptor(2, 4, 'open', 'shut')
+        self['DigitalChannels']['2, 5'] = DigitalChannelDescriptor(2, 5, 'high', 'low')
+        self['DigitalChannels']['2, 6'] = DigitalChannelDescriptor(2, 6, 'on', 'off')
+        self['DigitalChannels']['2, 7'] = DigitalChannelDescriptor(2, 7, 'on', 'off')
+        self['DigitalChannels']['2, 8'] = DigitalChannelDescriptor(2, 8, 'high', 'low')
+        self['DigitalChannels']['2, 9'] = DigitalChannelDescriptor(2, 9, 'output1', 'output2')
+        self['DigitalChannels']['2, 10'] = DigitalChannelDescriptor(2, 10, 'on', 'off')
+        self['DigitalChannels']['2, 11'] = DigitalChannelDescriptor(2, 11, 'on', 'off')
+        self['DigitalChannels']['2, 12'] = DigitalChannelDescriptor(2, 12, 'open', 'shut')
+        self['DigitalChannels']['2, 13'] = DigitalChannelDescriptor(2, 13, 'open', 'shut')
+        self['DigitalChannels']['2, 14'] = DigitalChannelDescriptor(2, 14, 'open', 'shut')
+        self['DigitalChannels']['AnalogTrigger2'] = DigitalChannelDescriptor(2, 15)
 
-	def saveSettings(self):
-		'''save settings to file'''
-		versionPath = os.path.join(self.configPath, 'version')
-		settingsPath = os.path.join(self.configPath, 'settings')
-		with open(versionPath, 'wb') as f:
-			pickle.dump(self.version, f)
-		with open(settingsPath, 'wb') as f:
-			pickle.dump(self.items(), f)
-		
-	
-	def update(self, *args, **kwds):
-		''' interface for dictionary
-		
-		send changed signal when appropriate '''
-		
-		# parse args
-		new_data = {}
-		new_data.update(*args, **kwds)
+        self['DigitalChannels']['3, 0'] = DigitalChannelDescriptor(3, 0, 'high', 'low')
+        self['DigitalChannels']['3, 1'] = DigitalChannelDescriptor(3, 1, 'open', 'shut')
+        self['DigitalChannels']['3, 2'] = DigitalChannelDescriptor(3, 2, 'open', 'shut')
+        self['DigitalChannels']['3, 3'] = DigitalChannelDescriptor(3, 3, 'open', 'shut')
+        self['DigitalChannels']['3, 4'] = DigitalChannelDescriptor(3, 4, 'open', 'shut')
+        self['DigitalChannels']['3, 5'] = DigitalChannelDescriptor(3, 5, 'high', 'low')
+        self['DigitalChannels']['3, 6'] = DigitalChannelDescriptor(3, 6, 'on', 'off')
+        self['DigitalChannels']['3, 7'] = DigitalChannelDescriptor(3, 7, 'on', 'off')
+        self['DigitalChannels']['3, 8'] = DigitalChannelDescriptor(3, 8, 'high', 'low')
+        self['DigitalChannels']['3, 9'] = DigitalChannelDescriptor(3, 9, 'output1', 'output2')
+        self['DigitalChannels']['3, 10'] = DigitalChannelDescriptor(3, 10, 'on', 'off')
+        self['DigitalChannels']['3, 11'] = DigitalChannelDescriptor(3, 11, 'on', 'off')
+        self['DigitalChannels']['3, 12'] = DigitalChannelDescriptor(3, 12, 'open', 'shut')
+        self['DigitalChannels']['3, 13'] = DigitalChannelDescriptor(3, 13, 'open', 'shut')
+        self['DigitalChannels']['3, 14'] = DigitalChannelDescriptor(3, 14, 'open', 'shut')
+        self['DigitalChannels']['3, 15'] = DigitalChannelDescriptor(3, 15)
 
-		changed_keys = []
-		for key in new_data.keys():
-			if new_data.get(key) != dict.get(self, key):
-				changed_keys.append(key)
-		dict.update(self, new_data)
-		if changed_keys:
-			self.emit('changed', tuple(changed_keys))
+        self['rampFunctions'] = dict()
+        self['rampFunctions']['ramp'] = RampFunctionDescriptor("int(ramptime*settings['SamplesPerMillisecond']/1000)", '[int(abs_time + t_step*x) for x in xrange(0, samples+1)]', '[last_values[device] - v_step*x for x in xrange(0, samples+1)]')
+        self['rampFunctions']['ramp100'] = RampFunctionDescriptor("int(ramptime*settings['SamplesPerMillisecond']/10/1000)", '[int(abs_time + t_step*x) for x in xrange(0, samples+1)]', '[last_values[device] - v_step*x for x in xrange(0, samples+1)]')
+        self['rampFunctions']['ramp_square'] = RampFunctionDescriptor("int(ramptime*settings['SamplesPerMillisecond']/1000)", '[int(abs_time + t_step*x) for x in xrange(0, samples+1)]', '[last_values[device] - v_step/samples*x**2 for x in xrange(0, samples+1)]')
+        self['rampFunctions']['ramp100_square'] = RampFunctionDescriptor("int(ramptime*settings['SamplesPerMillisecond']/10/1000)", '[int(abs_time + t_step*x) for x in xrange(0, samples+1)]', '[last_values[device] - v_step/samples*x**2 for x in xrange(0, samples+1)]')
+#       self['rampFunctions']['ramp_exp'] = RampFunctionDescriptor("int(ramptime*settings['SamplesPerMillisecond']/1000)", '[int(abs_time + t_step*x) for x in xrange(0, samples+1)]', '[numpy.exp(numpy.log(value-last_values[device]+1)/samples*x)+last_values[device]-1 for x in xrange(0, samples+1)]')
+#       self['rampFunctions']['ramp100_exp'] = RampFunctionDescriptor("int(ramptime*settings['SamplesPerMillisecond']/10/1000)", '[int(abs_time + t_step*x) for x in xrange(0, samples+1)]', '[numpy.exp(-numpy.log(last_values[device]-1+value)/samples*x)+last_values[device]-1 for x in xrange(0, samples+1)]')
 
-	def __setitem__(self, key, value):
-		''' interface for dictionary		
-		send changed signal when appropriate '''
-		if value != dict.get(self, key) or value == None:
-			dict.__setitem__(self, key, value)
-			self.emit('changed', (key,))
+
+        
+        # for plotter
+        self['plot.showCursor'] = False
+        self['plot.keepAspect'] = True
+        self['plot.maxOD'] = 1
+        self['plot.negFrac'] = 0.125
+        self['plot.cursorPos'] = [500, 400]
+        self['plot.ROI'] = None
+
+        self['physics.magnification'] = 2.26
+        self['physics.trapfreq'] = 250
+        self['physics.timeofflight'] = 3
+
+        
+        # other stuff for main window
+        self['main.showDataLog'] = True
+        self['main.runFit'] = False
+        self['main.fitMethod'] = FIT_MOMS2D
+        self['main.saveAll'] = False
+        
+        # for andor
+        self['andor.temp'] = -60
+        self['andor.mode'] = ANDOR_KINETIC
+        self['andor.pxSize'] = 13*10**(-6)
+        
+        # for scans
+        self['scan.dummies'] = 5
+        
+        self['scope.use'] = False
+        self['scope.channels'] = []
+        
+        self['fit.gauss'] = 'lambda p, x: p[0]*numpy.exp(-(x - p[1])**2/(2*p[2]**2)) + p[3]'
+        self['fit.lorentz'] = 'lambda p, x: p[0]*p[2]**2/((x - p[1])**2 + p[2]**2) + p[3]'
+        self['fit.allowOffset'] = False
+        
+
+    def saveSettings(self):
+        '''save settings to file'''
+        versionPath = os.path.join(self.configPath, 'version')
+        settingsPath = os.path.join(self.configPath, 'settings')
+        with open(versionPath, 'wb') as f:
+            pickle.dump(self.version, f)
+        with open(settingsPath, 'wb') as f:
+            pickle.dump(self.items(), f)
+        
+    
+    def update(self, *args, **kwds):
+        ''' interface for dictionary
+        
+        send changed signal when appropriate '''
+        
+        # parse args
+        new_data = {}
+        new_data.update(*args, **kwds)
+
+        changed_keys = []
+        for key in new_data.keys():
+            if new_data.get(key) != dict.get(self, key):
+                changed_keys.append(key)
+        dict.update(self, new_data)
+        if changed_keys:
+            self.emit('changed', tuple(changed_keys))
+
+    def __setitem__(self, key, value):
+        ''' interface for dictionary        
+        send changed signal when appropriate '''
+        if value != dict.get(self, key) or value == None:
+            dict.__setitem__(self, key, value)
+            self.emit('changed', (key,))
 
 
 #one instance of the settings class to use everywhere:
