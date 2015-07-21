@@ -35,7 +35,7 @@ from labalyzer.ScanselectorDialog import ScanselectorDialog
 from labalyzer.LabalyzerSettings import settings
 from labalyzer import DatalogDialog
 from labalyzer.TimeframeController import (TimeframeController, TimeframeCompiler)
-from labalyzer.constants import (TF_COLNAMES, COL_COLORHINT, MODE_CONTINUOUS, MODE_DIRECT, MODE_RUN, MODE_SCAN, MODE_STOPPED, MODE_EXTERNAL, ROWTYPE_PARAMETER, COL_VARNAME, COL_DEVICE, TF_COLNAMES)
+from labalyzer.constants import (TF_COLNAMES, COL_COLORHINT, MODE_CONTINUOUS, MODE_DIRECT, MODE_RUN, MODE_SCAN, MODE_STOPPED, ROWTYPE_PARAMETER, COL_VARNAME, COL_DEVICE, TF_COLNAMES)
 from labalyzer.plotter import mainPlotter
 
 import copy # for scanselect
@@ -111,7 +111,6 @@ class LabalyzerWindow(Window):
 		self.builder.get_object('btnGoSteady').connect('clicked', self.on_stateChange, MODE_CONTINUOUS)
 		self.builder.get_object('btnScan').connect('clicked', self.on_stateChange, MODE_SCAN)
 		self.builder.get_object('btnStop').connect('clicked', self.on_stateChange, MODE_STOPPED)
-		self.builder.get_object('btnExternal').connect('clicked', self.on_stateChange, MODE_EXTERNAL)
 		
 		chkboxes = ['chkScopeChannelOneActive', 'chkScopeChannelTwoActive', 'chkScopeChannelThreeActive', 'chkScopeChannelFourActive']
 		for i in range(1, 5):
@@ -245,12 +244,12 @@ class LabalyzerWindow(Window):
 
 		## analog channels
 		#########################################
-		aoChannels = [dict(), dict()]
+		aoChannels = [dict(), dict(), dict()]
 		for k in settings['AnalogChannels']:
 			aoChannels[settings['AnalogChannels'][k].boardNumber][settings['AnalogChannels'][k].channelNumber] = k
 
-		sKeys = [sorted(aoChannels[0]), sorted(aoChannels[1])]
-		for j in range(2):
+		sKeys = [sorted(aoChannels[0]), sorted(aoChannels[1]), sorted(aoChannels[2])]
+		for j in range(3):
 			tbl = gtk.Table(8, 3, False)
 			for i in range(8):
 				curr = settings['AnalogChannels'][aoChannels[j][sKeys[j][i]]]
