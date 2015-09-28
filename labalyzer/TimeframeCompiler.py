@@ -95,10 +95,13 @@ class TimeframeCompiler:
         abs_time = 0                            # keep track of total time up to a given entry
         analogCommands = defaultdict(list)      # store analog commands
         digitalCommands = defaultdict(list)     # store digital commands
-        cameraSettings = {"AcquisitionMode" : ANDOR_KINETIC, "X min" : 1, "Y min" : 1, "X max" : 1024, "Y max" : 1024, "Binning" : 1, "Exposure" : 0.2}
+        cameraSettings = {"AcquisitionMode" : ANDOR_KINETIC, "X min" : 1,
+        "Y min" : 1, "X max" : 1024, "Y max" : 1024, "Binning" : 1,
+        "Exposure" : 0.2}
         agilentSettings = {"Freq" : 5000, "Amp" : 1, "PulseLength": 0} #goes into pulse mode if PulseLength isn't zero
         agilentSettings2 = {"Freq" : 5000, "Amp" : 1, "PulseLength": 0}
-        srsPulseSettings = {"ABPulseLength": 200, "CDPulseLength": 200, "RelativeDelay": 200, "PulseLength":0} #values are in nm. RD can be negative
+        srsPulseSettings = {"ABPulseLength": 200, "CDPulseLength": 200,
+        "RelativeDelay": 200, "PulseLength":0} #values are in nm. RD can be negative
         rohSchSettings = {"Freq" : 300000000, "Power" : 0, "Mode": True}
         PWSSettings={"Voltage" : 0}
         errorEncountered = False
