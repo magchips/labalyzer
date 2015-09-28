@@ -75,7 +75,9 @@ class TimeframeController:
 	'''controls many logic, keeps track of current state, makes sure timeframes are
 	started and stopped as appropriate, scans, fitting, everything, really'''
 	def __init__(self, timeframe, ui):
-		self.timeframe = timeframe # liststore of the timeframe, needs to be passed from the main programme. could also be a simlpe array though.
+		self.timeframe = timeframe # liststore of the timeframe, 
+					   # needs to be passed from the main programme.
+					   # could also be a simlpe array though.
 		self.__data = None # store compiled data for timeframe
 		self.compiler = TimeframeCompiler()
 		self.timeframeIsLoaded = False
