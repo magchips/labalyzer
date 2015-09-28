@@ -424,9 +424,12 @@ class TimeframeController:
 		'''start new timeframe'''
 		logger.debug("attempting to start timeframe")
 		if self.__data is None:
-			logger.warn("Tried to start uncompiled Timeframe, or Timeframe is empty")
+			logger.warn("Tried to start uncompiled" 
+			"Timeframe, or Timeframe is empty")
 			if not self.attemptStateChange(MODE_STOPPED):
-				logger.error('attempt to stop timeframe failed, but no TF compiled. forcing MODE to STOP')
+				logger.error('attempt to stop" 
+				"timeframe failed, but no TF" 
+				"compiled. forcing MODE to STOP')
 			return False
 		self.__agilent.startOutput(self.__data[3])
 		self.__agilent2.startOutput(self.__data[4])
