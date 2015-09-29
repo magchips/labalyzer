@@ -223,7 +223,8 @@ class LabalyzerWindow(Window):
 		####################################
 		dioChannels = dict()
 		for k in settings['DigitalChannels']:
-			dioChannels[(settings['DigitalChannels'][k].portNumber, settings['DigitalChannels'][k].channelNumber)] = k
+			dioChannels[(settings['DigitalChannels'][k].portNumber,
+			settings['DigitalChannels'][k].channelNumber)] = k
 		sKeys = sorted(dioChannels.iterkeys())
 
 		for j in range(8):
@@ -231,11 +232,13 @@ class LabalyzerWindow(Window):
 			for i in range(8):
 				lbl = gtk.Label(dioChannels[sKeys[8*j+i]] + ': ')
 				lbl.set_alignment(0.9, 0.5)
-				btn = gtk.ToggleButton(settings['DigitalChannels'][dioChannels[sKeys[8*j+i]]].lowname)
+				btn = gtk.ToggleButton(settings['DigitalChannels']\
+				[dioChannels[sKeys[8*j+i]]].lowname)
 				btn.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse('#FF0000'))
 				btn.modify_bg(gtk.STATE_ACTIVE, gtk.gdk.color_parse('#00FF00'))
 				btn.set_size_request(60, -1)
-				btn.connect("toggled", self.DCDigitalChange, settings['DigitalChannels'][dioChannels[sKeys[8*j+i]]])
+				btn.connect("toggled", self.DCDigitalChange,
+				settings['DigitalChannels'][dioChannels[sKeys[8*j+i]]])
 				tbl.attach(lbl, 0, 1, i, i+1)
 				tbl.attach(btn, 1, 2, i, i+1, gtk.SHRINK)
 			tbl.show_all()
